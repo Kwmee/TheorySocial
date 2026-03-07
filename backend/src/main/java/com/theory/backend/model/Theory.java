@@ -1,6 +1,4 @@
 package com.theory.backend.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,7 +36,6 @@ public class Theory {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
-    @JsonIgnoreProperties({"theories"})
     private User author;
 
     public Long getId() {

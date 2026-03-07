@@ -1,6 +1,4 @@
 package com.theory.backend.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +31,6 @@ public class User {
     @Column(nullable = false, unique = true, length = 120)
     private String email;
 
-    @JsonIgnore
     @NotBlank
     @Column(nullable = false)
     private String passwordHash;
@@ -44,7 +41,6 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Theory> theories = new ArrayList<>();
 

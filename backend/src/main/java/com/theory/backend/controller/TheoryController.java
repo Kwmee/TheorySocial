@@ -1,5 +1,6 @@
 package com.theory.backend.controller;
 
+import com.theory.backend.dto.TheoryResponse;
 import com.theory.backend.model.Theory;
 import com.theory.backend.service.TheoryService;
 import jakarta.validation.constraints.NotBlank;
@@ -27,14 +28,14 @@ public class TheoryController {
     }
 
     @GetMapping
-    public List<Theory> getAllTheories() {
+    public List<TheoryResponse> getAllTheories() {
         return theoryService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Theory createTheory(@Valid @RequestBody CreateTheoryRequest request,
-                               @AuthenticationPrincipal UserDetails principal) {
+    public TheoryResponse createTheory(@Valid @RequestBody CreateTheoryRequest request,
+                                       @AuthenticationPrincipal UserDetails principal) {
         Theory theory = new Theory();
         theory.setTitle(request.title());
         theory.setContent(request.content());
