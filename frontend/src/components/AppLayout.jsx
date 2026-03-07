@@ -13,19 +13,24 @@ export function AppLayout() {
 
   return (
     <>
-      <div className="app-frame">
-        <header className="site-header">
+      <div className="app-frame app-frame-social">
+        <header className="site-header site-header-social">
           <div>
             <p className="brand-mark">Theory Social</p>
             <h1 className="brand-title">Teorias Humanas</h1>
+            <p className="header-subcopy">
+              Feed privado para explorar ideas por tema, autor y contexto.
+            </p>
           </div>
+
           <nav className="site-nav">
             <NavLink to="/" end>
               Inicio
             </NavLink>
           </nav>
+
           <div className="header-actions">
-            <div className="user-chip">
+            <div className="user-chip user-chip-social">
               <span>{user?.username}</span>
               <small>{user?.email}</small>
             </div>
@@ -37,26 +42,26 @@ export function AppLayout() {
 
         <Outlet />
 
-        <footer className="site-footer">
+        <footer className="site-footer site-footer-social">
           <div>
             <h2>Theory Social</h2>
             <p>
-              Espacio privado para explorar, debatir y ordenar teorias con una
-              experiencia consistente y protegida.
+              Plataforma privada para publicar, descubrir y refinar teorias
+              humanas sin exponer contenido a usuarios no autenticados.
             </p>
           </div>
           <div className="footer-grid">
             <div>
               <h3>Seguridad</h3>
-              <p>Acceso restringido a usuarios autenticados.</p>
+              <p>Sesion requerida en todo el producto y terminos persistidos en servidor.</p>
             </div>
             <div>
-              <h3>Moderacion futura</h3>
-              <p>La base queda preparada para votos, comentarios y reportes.</p>
+              <h3>Escalabilidad</h3>
+              <p>Los filtros actuales pueden migrar a backend sin rehacer la experiencia.</p>
             </div>
             <div>
-              <h3>Persistencia</h3>
-              <p>La aceptacion de terminos vive en MySQL y aplica en todos los dispositivos.</p>
+              <h3>Evolucion</h3>
+              <p>La interfaz queda lista para votos, comentarios, guardados y moderacion futura.</p>
             </div>
           </div>
         </footer>

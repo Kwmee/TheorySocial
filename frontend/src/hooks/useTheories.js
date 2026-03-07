@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { createTheory as createTheoryRequest, fetchTheories } from "../services/api";
+import { buildTopicOptions, enrichTheory, filterTheories } from "../services/theoryTopics";
 
 export function useTheories() {
   const [theories, setTheories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeTopic, setActiveTopic] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   useEffect(() => {
     let active = true;
@@ -16,7 +20,7 @@ export function useTheories() {
       try {
         const data = await fetchTheories();
         if (active) {
-          setTheories(data);
+          setTheories(data.map(enrichTheory));
         }
       } catch (requestError) {
         if (active) {
@@ -37,13 +41,25 @@ export function useTheories() {
   }, []);
 
   const createTheory = async (payload) => {
-    const created = await createTheoryRequest(payload);
+    const created = enrichTheory(await createTheoryRequest(payload));
     setTheories((current) => [created, ...current]);
     return created;
   };
 
+  const topicOptions = buildTopicOptions(theories);
+  const filteredTheories = filterTheories(theories, {
+    topic: activeTopic,
+    query: deferredSearchQuery,
+  });
+
   return {
     theories,
+    filteredTheories,
+    topicOptions,
+    activeTopic,
+    setActiveTopic,
+    searchQuery,
+    setSearchQuery,
     loading,
     error,
     createTheory,
