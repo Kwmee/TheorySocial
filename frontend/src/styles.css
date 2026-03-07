@@ -1,0 +1,127 @@
+:root {
+  font-family: "Segoe UI", sans-serif;
+  color: #172033;
+  background:
+    radial-gradient(circle at top, rgba(255, 210, 146, 0.5), transparent 35%),
+    linear-gradient(180deg, #f8efe4 0%, #f3f7fb 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 20px 72px;
+}
+
+.hero {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #965c2c;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(2.2rem, 5vw, 4.3rem);
+  line-height: 1;
+}
+
+.hero-copy {
+  max-width: 700px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.content-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.panel {
+  padding: 24px;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 24px 50px rgba(23, 32, 51, 0.08);
+}
+
+.stack {
+  display: grid;
+  gap: 16px;
+}
+
+.section-head,
+.theory-card header,
+.theory-card footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d7dce5;
+  border-radius: 14px;
+  background: #fff;
+}
+
+button {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #172033;
+  cursor: pointer;
+}
+
+.theory-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.feedback {
+  color: #0c6b43;
+}
+
+.error {
+  color: #b42318;
+}
+
+@media (max-width: 720px) {
+  .section-head,
+  .theory-card header,
+  .theory-card footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
