@@ -1,0 +1,22 @@
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Java
+backend/target/
+.m2/
+tools/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Env
+.env
+backend/.env
+frontend/.env
+
+# OS
+Thumbs.db
+Desktop.ini
