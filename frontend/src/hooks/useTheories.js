@@ -1,5 +1,9 @@
 import { useDeferredValue, useEffect, useState } from "react";
-import { createTheory as createTheoryRequest, fetchTheories } from "../services/api";
+import {
+  createTheory as createTheoryRequest,
+  fetchTheories,
+  voteTheory as voteTheoryRequest,
+} from "../services/api";
 import { buildTopicOptions, enrichTheory, filterTheories } from "../services/theoryTopics";
 
 export function useTheories() {
@@ -46,6 +50,14 @@ export function useTheories() {
     return created;
   };
 
+  const voteTheory = async (theoryId, value) => {
+    const updatedTheory = enrichTheory(await voteTheoryRequest(theoryId, value));
+    setTheories((current) =>
+      current.map((theory) => (theory.id === theoryId ? updatedTheory : theory)),
+    );
+    return updatedTheory;
+  };
+
   const topicOptions = buildTopicOptions(theories);
   const filteredTheories = filterTheories(theories, {
     topic: activeTopic,
@@ -63,5 +75,6 @@ export function useTheories() {
     loading,
     error,
     createTheory,
+    voteTheory,
   };
 }

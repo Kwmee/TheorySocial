@@ -15,24 +15,23 @@ export function AppLayout() {
     <>
       <div className="app-frame app-frame-social">
         <header className="site-header site-header-social">
-          <div>
+          <div className="header-brand-block">
             <p className="brand-mark">Theory Social</p>
             <h1 className="brand-title">Teorias Humanas</h1>
-            <p className="header-subcopy">
-              Feed privado para explorar ideas por tema, autor y contexto.
-            </p>
+            <p className="header-subcopy">Foro privado de debate, sintesis y descubrimiento tematico.</p>
           </div>
 
-          <nav className="site-nav">
+          <nav className="site-nav site-nav-forum">
             <NavLink to="/" end>
               Inicio
             </NavLink>
+            <span className="forum-status">Feed general</span>
           </nav>
 
-          <div className="header-actions">
+          <div className="header-actions header-actions-forum">
             <div className="user-chip user-chip-social">
               <span>{user?.username}</span>
-              <small>{user?.email}</small>
+              <small>Miembro activo</small>
             </div>
             <button className="ghost-button" onClick={handleLogout}>
               Cerrar sesion

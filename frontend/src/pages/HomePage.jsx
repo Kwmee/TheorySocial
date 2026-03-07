@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { TheoryComposer } from "../components/TheoryComposer";
 import { TheoryList } from "../components/TheoryList";
+import { TheorySearchModal } from "../components/TheorySearchModal";
 import { useAuth } from "../hooks/useAuth";
 import { useTheories } from "../hooks/useTheories";
 
 export function HomePage() {
   const { user } = useAuth();
   const {
-    theories,
     loading,
     error,
     createTheory,
+    voteTheory,
     topicOptions,
     activeTopic,
     setActiveTopic,
@@ -17,17 +19,19 @@ export function HomePage() {
     setSearchQuery,
     filteredTheories,
   } = useTheories();
+  const [activeSection, setActiveSection] = useState("read");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <main className="app-shell social-shell">
       <section className="panel social-hero">
         <div className="social-hero-copy">
           <p className="panel-kicker">Comunidad privada</p>
-          <h2>Descubre teorias por temas, no solo por orden cronologico.</h2>
+          <h2>Lee, busca o publica teorias desde una estructura de foro clara.</h2>
           <p>
-            El feed mantiene acceso seguro por sesion, pero ya funciona como una
-            red social real: exploras ideas, detectas temas y sigues autores sin
-            exponer contenido a visitantes anonimos.
+            La experiencia queda separada por tareas para que el producto se sienta
+            mas ordenado: leer es flujo continuo, buscar es exploracion modal y
+            publicar es una accion dedicada.
           </p>
         </div>
 
@@ -51,44 +55,60 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="social-layout">
-        <aside className="social-sidebar">
-          <TheoryComposer onSubmit={createTheory} />
-
-          <section className="panel social-panel social-discovery-panel">
-            <div className="panel-header">
-              <div>
-                <p className="panel-kicker">Descubrimiento</p>
-                <h2>Filtra por tema</h2>
-              </div>
-            </div>
-
-            <label>
-              Buscar teoria o autor
-              <input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Confianza, comunidad, identidad..."
-              />
-            </label>
-
-            <div className="topic-chip-grid">
-              {topicOptions.map((topic) => (
-                <button
-                  key={topic.value}
-                  type="button"
-                  className={activeTopic === topic.value ? "topic-chip active" : "topic-chip"}
-                  onClick={() => setActiveTopic(topic.value)}
-                >
-                  {topic.label}
-                </button>
-              ))}
-            </div>
-          </section>
-        </aside>
-
-        <TheoryList theories={filteredTheories} loading={loading} error={error} />
+      <section className="forum-toolbar">
+        <button
+          type="button"
+          className={activeSection === "compose" ? "forum-toolbar-button active" : "forum-toolbar-button"}
+          onClick={() => setActiveSection("compose")}
+        >
+          Insertar nueva teoria
+        </button>
+        <button
+          type="button"
+          className="forum-toolbar-button"
+          onClick={() => setSearchOpen(true)}
+        >
+          Buscar teorias
+        </button>
+        <button
+          type="button"
+          className={activeSection === "read" ? "forum-toolbar-button active" : "forum-toolbar-button"}
+          onClick={() => setActiveSection("read")}
+        >
+          Leer teorias
+        </button>
       </section>
+
+      {activeSection === "compose" ? (
+        <section className="forum-section">
+          <TheoryComposer onSubmit={createTheory} />
+        </section>
+      ) : (
+        <section className="forum-section">
+          <TheoryList
+            theories={filteredTheories}
+            loading={loading}
+            error={error}
+            onVote={voteTheory}
+            kicker="Lectura"
+            title="Feed escroleable de teorias"
+            emptyTitle="No hay teorias disponibles."
+            emptyCopy="Publica una teoria nueva o usa la busqueda para explorar otros temas."
+          />
+        </section>
+      )}
+
+      <TheorySearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        topicOptions={topicOptions}
+        activeTopic={activeTopic}
+        onTopicChange={setActiveTopic}
+        theories={filteredTheories}
+        onVote={voteTheory}
+      />
     </main>
   );
 }

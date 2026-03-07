@@ -21,6 +21,7 @@ export function AuthPage() {
   const { isAuthenticated, login, signup } = useAuth();
   const location = useLocation();
   const [mode, setMode] = useState("login");
+  const [modalOpen, setModalOpen] = useState(Boolean(location.state?.from));
   const [loginForm, setLoginForm] = useState(initialLogin);
   const [signupForm, setSignupForm] = useState(initialSignup);
   const [error, setError] = useState("");
@@ -40,6 +41,12 @@ export function AuthPage() {
     setActiveForm((current) => ({ ...current, [name]: value }));
   };
 
+  const openAuthModal = (nextMode) => {
+    setMode(nextMode);
+    setError("");
+    setModalOpen(true);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSubmitting(true);
@@ -51,6 +58,7 @@ export function AuthPage() {
       } else {
         await signup(signupForm);
       }
+      setModalOpen(false);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -62,6 +70,23 @@ export function AuthPage() {
     <div className="auth-landing auth-landing-editorial">
       <div className="auth-aurora auth-aurora-left" aria-hidden="true" />
       <div className="auth-aurora auth-aurora-right" aria-hidden="true" />
+
+      <header className="landing-header">
+        <div className="header-brand-block">
+          <p className="brand-mark">Theory Social</p>
+          <h2 className="landing-header-title">Teorias Humanas</h2>
+          <p className="header-subcopy">Foro privado para publicar y debatir teorias humanas con contexto.</p>
+        </div>
+
+        <nav className="landing-nav" aria-label="Acciones de acceso">
+          <button className="ghost-button" onClick={() => openAuthModal("login")} type="button">
+            Iniciar sesion
+          </button>
+          <button onClick={() => openAuthModal("signup")} type="button">
+            Crear cuenta
+          </button>
+        </nav>
+      </header>
 
       <main className="auth-layout auth-layout-editorial">
         <section className="auth-story">
@@ -77,12 +102,12 @@ export function AuthPage() {
               </p>
 
               <div className="hero-actions">
-                <button onClick={() => setMode("signup")} type="button">
+                <button onClick={() => openAuthModal("signup")} type="button">
                   Crear cuenta
                 </button>
                 <button
                   className="ghost-button"
-                  onClick={() => setMode("login")}
+                  onClick={() => openAuthModal("login")}
                   type="button"
                 >
                   Iniciar sesion
@@ -162,98 +187,111 @@ export function AuthPage() {
             </div>
           </section>
         </section>
+      </main>
 
-        <aside className="panel auth-panel auth-panel-premium">
-          <div className="auth-panel-top">
-            <div>
-              <p className="panel-kicker">Acceso seguro</p>
-              <h2>{mode === "login" ? "Vuelve a la comunidad" : "Solicita tu entrada"}</h2>
-            </div>
-            <p className="auth-panel-copy">
-              {mode === "login"
-                ? "Recupera tu espacio de trabajo y tus debates guardados."
-                : "Crea una cuenta y accede a una experiencia privada donde las teorias se organizan por temas."}
-            </p>
-          </div>
-
-          <div className="auth-tabs" role="tablist" aria-label="Acciones de acceso">
+      {modalOpen ? (
+        <div className="auth-modal-backdrop" role="dialog" aria-modal="true">
+          <div className="auth-modal-card">
             <button
-              aria-selected={mode === "login"}
-              className={mode === "login" ? "tab active" : "tab"}
-              onClick={() => setMode("login")}
+              aria-label="Cerrar acceso"
+              className="auth-modal-close"
+              onClick={() => setModalOpen(false)}
               type="button"
             >
-              Iniciar sesion
+              x
             </button>
-            <button
-              aria-selected={mode === "signup"}
-              className={mode === "signup" ? "tab active" : "tab"}
-              onClick={() => setMode("signup")}
-              type="button"
-            >
-              Registrarse
-            </button>
-          </div>
 
-          <form className="stack auth-form" onSubmit={handleSubmit}>
-            <label>
-              Usuario
-              <input
-                name="username"
-                onChange={handleChange}
-                placeholder="Tu identificador publico"
-                value={activeForm.username}
-                minLength={3}
-                required
-              />
-            </label>
-
-            {mode === "signup" ? (
-              <label>
-                Correo
-                <input
-                  name="email"
-                  onChange={handleChange}
-                  placeholder="tu@correo.com"
-                  type="email"
-                  value={signupForm.email}
-                  required
-                />
-              </label>
-            ) : null}
-
-            <label>
-              Contrasena
-              <input
-                name="password"
-                onChange={handleChange}
-                placeholder="Minimo 8 caracteres"
-                type="password"
-                value={activeForm.password}
-                minLength={8}
-                required
-              />
-            </label>
-
-            <div className="auth-form-meta">
-              <span className="status-dot" aria-hidden="true" />
-              <p>
-                El contenido autentico permanece bloqueado hasta iniciar sesion
-                y aceptar terminos dentro de la plataforma.
+            <div className="auth-panel-top">
+              <div>
+                <p className="panel-kicker">Acceso seguro</p>
+                <h2>{mode === "login" ? "Vuelve a la comunidad" : "Solicita tu entrada"}</h2>
+              </div>
+              <p className="auth-panel-copy">
+                {mode === "login"
+                  ? "Recupera tu espacio de trabajo y tus debates guardados."
+                  : "Crea una cuenta y accede a una experiencia privada donde las teorias se organizan por temas."}
               </p>
             </div>
 
-            <button type="submit" disabled={submitting}>
-              {submitting
-                ? "Procesando..."
-                : mode === "login"
-                  ? "Entrar ahora"
-                  : "Crear acceso"}
-            </button>
-            {error ? <p className="error">{error}</p> : null}
-          </form>
-        </aside>
-      </main>
+            <div className="auth-tabs" role="tablist" aria-label="Acciones de acceso">
+              <button
+                aria-selected={mode === "login"}
+                className={mode === "login" ? "tab active" : "tab"}
+                onClick={() => setMode("login")}
+                type="button"
+              >
+                Iniciar sesion
+              </button>
+              <button
+                aria-selected={mode === "signup"}
+                className={mode === "signup" ? "tab active" : "tab"}
+                onClick={() => setMode("signup")}
+                type="button"
+              >
+                Registrarse
+              </button>
+            </div>
+
+            <form className="stack auth-form" onSubmit={handleSubmit}>
+              <label>
+                Usuario
+                <input
+                  name="username"
+                  onChange={handleChange}
+                  placeholder="Tu identificador publico"
+                  value={activeForm.username}
+                  minLength={3}
+                  required
+                />
+              </label>
+
+              {mode === "signup" ? (
+                <label>
+                  Correo
+                  <input
+                    name="email"
+                    onChange={handleChange}
+                    placeholder="tu@correo.com"
+                    type="email"
+                    value={signupForm.email}
+                    required
+                  />
+                </label>
+              ) : null}
+
+              <label>
+                Contrasena
+                <input
+                  name="password"
+                  onChange={handleChange}
+                  placeholder="Minimo 8 caracteres"
+                  type="password"
+                  value={activeForm.password}
+                  minLength={8}
+                  required
+                />
+              </label>
+
+              <div className="auth-form-meta">
+                <span className="status-dot" aria-hidden="true" />
+                <p>
+                  El contenido autentico permanece bloqueado hasta iniciar sesion
+                  y aceptar terminos dentro de la plataforma.
+                </p>
+              </div>
+
+              <button type="submit" disabled={submitting}>
+                {submitting
+                  ? "Procesando..."
+                  : mode === "login"
+                    ? "Entrar ahora"
+                    : "Crear acceso"}
+              </button>
+              {error ? <p className="error">{error}</p> : null}
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

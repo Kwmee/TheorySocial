@@ -69,3 +69,10 @@ export function createTheory(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export function voteTheory(theoryId, value) {
+  return request(`/theories/${theoryId}/vote`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+}

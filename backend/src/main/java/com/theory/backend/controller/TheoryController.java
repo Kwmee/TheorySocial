@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,8 @@ public class TheoryController {
     }
 
     @GetMapping
-    public List<TheoryResponse> getAllTheories() {
-        return theoryService.findAll();
+    public List<TheoryResponse> getAllTheories(@AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findAll(principal.getUsername());
     }
 
     @PostMapping
@@ -42,9 +43,21 @@ public class TheoryController {
         return theoryService.create(theory, principal.getUsername());
     }
 
+    @PostMapping("/{id}/vote")
+    public TheoryResponse voteTheory(@PathVariable Long id,
+                                     @Valid @RequestBody VoteTheoryRequest request,
+                                     @AuthenticationPrincipal UserDetails principal) {
+        return theoryService.vote(id, principal.getUsername(), request.value());
+    }
+
     public record CreateTheoryRequest(
             @NotBlank String title,
             @NotBlank String content
+    ) {
+    }
+
+    public record VoteTheoryRequest(
+            int value
     ) {
     }
 }
