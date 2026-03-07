@@ -4,8 +4,9 @@ import com.theory.backend.model.Theory;
 import com.theory.backend.service.TheoryService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,15 +33,15 @@ public class TheoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Theory createTheory(@Valid @RequestBody CreateTheoryRequest request) {
+    public Theory createTheory(@Valid @RequestBody CreateTheoryRequest request,
+                               @AuthenticationPrincipal UserDetails principal) {
         Theory theory = new Theory();
         theory.setTitle(request.title());
         theory.setContent(request.content());
-        return theoryService.create(theory, request.authorId());
+        return theoryService.create(theory, principal.getUsername());
     }
 
     public record CreateTheoryRequest(
-            @NotNull Long authorId,
             @NotBlank String title,
             @NotBlank String content
     ) {

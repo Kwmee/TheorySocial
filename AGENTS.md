@@ -16,6 +16,7 @@
 
 ## Reglas de arquitectura
 - Backend en capas: `controller`, `service`, `repository`, `model`.
+- Seguridad backend con Spring Security y sesion HTTP; solo `/api/auth/**` puede ser publico.
 - Configuracion sensible mediante variables de entorno.
 - Frontend organizado en `components`, `hooks` y `services`.
 - Entidades iniciales: `User` y `Theory`.
@@ -25,6 +26,9 @@
 - Mantener endpoints y modelos faciles de extender.
 - Incluir script SQL inicial y configuracion local documentada.
 - Evitar acoplamientos innecesarios entre frontend y backend.
+- Bloquear todo el contenido del frontend para usuarios no autenticados.
+- Persistir la aceptacion de terminos y condiciones en base de datos, nunca solo en navegador.
+- Mantener tema visual consistente mediante variables CSS con paleta lila oscura.
 
 ## Validacion minima esperada
 - Backend compila con Maven.

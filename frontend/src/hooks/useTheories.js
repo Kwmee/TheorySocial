@@ -10,6 +10,9 @@ export function useTheories() {
     let active = true;
 
     async function loadTheories() {
+      setLoading(true);
+      setError("");
+
       try {
         const data = await fetchTheories();
         if (active) {
@@ -17,7 +20,7 @@ export function useTheories() {
         }
       } catch (requestError) {
         if (active) {
-          setError("No se pudo cargar la API.");
+          setError(requestError.message);
         }
       } finally {
         if (active) {

@@ -2,8 +2,11 @@ export function TheoryList({ theories, loading, error }) {
   return (
     <section className="panel">
       <div className="section-head">
-        <h2>Teorias recientes</h2>
-        <span>{theories.length} publicadas</span>
+        <div>
+          <p className="panel-kicker">Debate activo</p>
+          <h2>Teorias recientes</h2>
+        </div>
+        <span className="pill">{theories.length} activas</span>
       </div>
 
       {loading ? <p>Cargando teorias...</p> : null}
@@ -13,12 +16,16 @@ export function TheoryList({ theories, loading, error }) {
         {theories.map((theory) => (
           <article key={theory.id} className="theory-card">
             <header>
-              <h3>{theory.title}</h3>
-              <span>Puntaje: {theory.score}</span>
+              <div>
+                <h3>{theory.title}</h3>
+                <p className="theory-meta">
+                  Por {theory.author?.username ?? "Usuario"}
+                </p>
+              </div>
+              <span className="pill subtle">Score {theory.score}</span>
             </header>
             <p>{theory.content}</p>
             <footer>
-              <span>Autor: {theory.author?.username ?? "Sin nombre"}</span>
               <span>{new Date(theory.createdAt).toLocaleString("es-ES")}</span>
             </footer>
           </article>

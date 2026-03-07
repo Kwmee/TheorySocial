@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const initialState = {
-  authorId: "1",
   title: "",
   content: "",
 };
@@ -22,14 +21,11 @@ export function TheoryComposer({ onSubmit }) {
     setFeedback("");
 
     try {
-      await onSubmit({
-        ...form,
-        authorId: Number(form.authorId),
-      });
+      await onSubmit(form);
       setForm(initialState);
-      setFeedback("Teoria publicada.");
+      setFeedback("Teoria publicada correctamente.");
     } catch (error) {
-      setFeedback("No se pudo publicar la teoria.");
+      setFeedback(error.message);
     } finally {
       setSubmitting(false);
     }
@@ -37,17 +33,13 @@ export function TheoryComposer({ onSubmit }) {
 
   return (
     <section className="panel">
-      <h2>Publicar teoria</h2>
+      <div className="panel-header">
+        <div>
+          <p className="panel-kicker">Nueva publicacion</p>
+          <h2>Comparte una teoria</h2>
+        </div>
+      </div>
       <form className="stack" onSubmit={handleSubmit}>
-        <label>
-          Autor ID
-          <input
-            name="authorId"
-            value={form.authorId}
-            onChange={handleChange}
-            required
-          />
-        </label>
         <label>
           Titulo
           <input
@@ -55,21 +47,23 @@ export function TheoryComposer({ onSubmit }) {
             value={form.title}
             onChange={handleChange}
             maxLength={180}
+            placeholder="Ej. La cooperacion nace del relato compartido"
             required
           />
         </label>
         <label>
-          Contenido
+          Desarrollo
           <textarea
             name="content"
             value={form.content}
             onChange={handleChange}
-            rows="7"
+            rows="8"
+            placeholder="Explica la hipotesis, contexto y argumentos centrales."
             required
           />
         </label>
         <button type="submit" disabled={submitting}>
-          {submitting ? "Publicando..." : "Publicar"}
+          {submitting ? "Publicando..." : "Publicar teoria"}
         </button>
         {feedback ? <p className="feedback">{feedback}</p> : null}
       </form>

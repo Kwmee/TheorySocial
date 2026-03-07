@@ -23,8 +23,8 @@ public class TheoryService {
         return theoryRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    public Theory create(Theory theory, Long authorId) {
-        User author = userRepository.findById(authorId)
+    public Theory create(Theory theory, String username) {
+        User author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Author not found"));
 
         theory.setAuthor(author);

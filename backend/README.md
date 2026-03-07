@@ -13,8 +13,7 @@
 mvn spring-boot:run
 ```
 
-## Endpoints base
-- `GET /api/users`
-- `POST /api/users`
-- `GET /api/theories`
-- `POST /api/theories`
+## Seguridad base
+- `POST /api/auth/signup` y `POST /api/auth/login` son publicos.
+- Todo el resto de endpoints `/api/**` requiere sesion autenticada.
+- La sesion se mantiene por cookie HTTP y el frontend debe enviar `credentials: "include"`.

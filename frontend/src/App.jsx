@@ -1,25 +1,27 @@
-import { TheoryComposer } from "./components/TheoryComposer";
-import { TheoryList } from "./components/TheoryList";
-import { useTheories } from "./hooks/useTheories";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./hooks/useAuth";
+import { AppLayout } from "./components/AppLayout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthPage } from "./pages/AuthPage";
+import { HomePage } from "./pages/HomePage";
 
 export default function App() {
-  const { theories, loading, error, createTheory } = useTheories();
-
   return (
-    <main className="app-shell">
-      <section className="hero">
-        <p className="eyebrow">Theory Social</p>
-        <h1>Red social para publicar y debatir teorias humanas.</h1>
-        <p className="hero-copy">
-          La base inicial conecta React con una API Spring Boot y deja lista la
-          evolucion hacia votos, comentarios y moderacion.
-        </p>
-      </section>
-
-      <section className="content-grid">
-        <TheoryComposer onSubmit={createTheory} />
-        <TheoryList theories={theories} loading={loading} error={error} />
-      </section>
-    </main>
+    <AuthProvider>
+      <Routes>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<HomePage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
