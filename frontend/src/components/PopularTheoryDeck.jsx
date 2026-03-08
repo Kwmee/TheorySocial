@@ -139,11 +139,11 @@ export function PopularTheoryDeck({
   };
 
   return (
-    <section className="panel social-panel popular-panel">
-      <div className="section-head social-section-head">
+    <section className="discover-panel">
+      <div className="section-head feed-section-head">
         <div>
-          <p className="panel-kicker">Teorias populares</p>
-          <h2>Desliza para decidir que ideas suben en portada.</h2>
+          <p className="panel-kicker">Descubrir</p>
+          <h2>Desliza para decidir que ideas suben al frente del producto.</h2>
         </div>
         <span className="pill">{theories.length} pendientes</span>
       </div>

@@ -1,69 +1,11 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { Outlet } from "react-router-dom";
 import { TermsModal } from "./TermsModal";
 
 export function AppLayout() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/auth", { replace: true });
-  };
-
   return (
     <>
-      <div className="app-frame app-frame-social">
-        <header className="site-header site-header-social">
-          <div className="header-brand-block">
-            <p className="brand-mark">Theory Social</p>
-            <h1 className="brand-title">Teorias Humanas</h1>
-            <p className="header-subcopy">Foro privado de debate, sintesis y descubrimiento tematico.</p>
-          </div>
-
-          <nav className="site-nav site-nav-forum">
-            <NavLink to="/" end>
-              Inicio
-            </NavLink>
-            <span className="forum-status">Swipe + feed general</span>
-          </nav>
-
-          <div className="header-actions header-actions-forum">
-            <div className="user-chip user-chip-social">
-              <span>{user?.username}</span>
-              <small>Miembro activo</small>
-            </div>
-            <button className="ghost-button" onClick={handleLogout}>
-              Cerrar sesion
-            </button>
-          </div>
-        </header>
-
+      <div className="app-layout-shell">
         <Outlet />
-
-        <footer className="site-footer site-footer-social">
-          <div>
-            <h2>Theory Social</h2>
-            <p>
-              Plataforma privada para publicar, descubrir y refinar teorias
-              humanas sin exponer contenido a usuarios no autenticados.
-            </p>
-          </div>
-          <div className="footer-grid">
-            <div>
-              <h3>Seguridad</h3>
-              <p>Sesion requerida en todo el producto y terminos persistidos en servidor.</p>
-            </div>
-            <div>
-              <h3>Escalabilidad</h3>
-              <p>El ranking popular ya vive en backend y admite ajustes de ventana temporal sin rehacer la UI.</p>
-            </div>
-            <div>
-              <h3>Evolucion</h3>
-              <p>La interfaz queda lista para votos, comentarios, guardados y moderacion futura.</p>
-            </div>
-          </div>
-        </footer>
       </div>
       <TermsModal />
     </>

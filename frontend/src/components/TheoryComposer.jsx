@@ -32,15 +32,15 @@ export function TheoryComposer({ onSubmit }) {
   };
 
   return (
-    <section className="panel social-panel composer-panel">
-      <div className="panel-header">
+    <section className="editor-panel">
+      <div className="panel-header editor-panel-header">
         <div>
           <p className="panel-kicker">Nueva publicacion</p>
-          <h2>Comparte una teoria con contexto</h2>
+          <h2>Escribe una teoria con el tono de un post largo y legible.</h2>
         </div>
       </div>
 
-      <form className="stack" onSubmit={handleSubmit}>
+      <form className="stack editor-form" onSubmit={handleSubmit}>
         <label>
           Titulo
           <input
@@ -65,11 +65,11 @@ export function TheoryComposer({ onSubmit }) {
         </label>
 
         <div className="composer-hints">
-          <span className="pill subtle">Consejo: menciona el tema principal</span>
+          <span className="pill subtle">Consejo: abre con una hipotesis clara</span>
           <span className="pill subtle">Ej.: confianza, identidad, poder</span>
         </div>
 
-        <button type="submit" disabled={submitting}>
+        <button type="submit" className="primary-action" disabled={submitting}>
           {submitting ? "Publicando..." : "Publicar teoria"}
         </button>
         {feedback ? <p className="feedback">{feedback}</p> : null}

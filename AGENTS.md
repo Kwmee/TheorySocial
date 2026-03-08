@@ -33,6 +33,11 @@
 - El sistema de votos debe garantizar un unico voto activo por usuario y teoria, con actualizacion consistente del score.
 - El ranking de popularidad debe basarse en votos netos recientes y apoyarse en indices SQL cuando aplique.
 - Mantener tema visual consistente mediante variables CSS con paleta lila oscura.
+- La experiencia social autenticada debe seguir un layout tipo Instagram: sidebar fija en escritorio, barra inferior en movil y columna central de contenido.
+- El modo swipe debe mantenerse operativo como una seccion `Descubrir` separada del feed principal.
+- Las teorias del feed deben renderizarse como cards limpias con cabecera, cuerpo legible y acciones de voto integradas.
+- Las micro-interacciones visuales deben priorizar `transform` y `opacity` para rendimiento GPU y evitar lag perceptible.
+- Cualquier refactor visual debe mantener contraste compatible con WCAG 2.2 dentro del tema lila oscuro.
 
 ## Validacion minima esperada
 - Backend compila con Maven.

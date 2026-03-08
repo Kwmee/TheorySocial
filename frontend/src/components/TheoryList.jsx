@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TheoryCard } from "./TheoryCard";
 
 export function TheoryList({
   theories,
@@ -32,8 +33,8 @@ export function TheoryList({
   };
 
   return (
-    <section className={compact ? "theory-feed-surface compact" : "panel social-panel theory-feed-panel"}>
-      <div className="section-head social-section-head">
+    <section className={compact ? "feed-surface compact" : "feed-surface"}>
+      <div className="section-head feed-section-head">
         <div>
           <p className="panel-kicker">{kicker}</p>
           <h2>{title}</h2>
@@ -45,58 +46,15 @@ export function TheoryList({
       {error ? <p className="error">{error}</p> : null}
       {voteError ? <p className="error">{voteError}</p> : null}
 
-      <div className={compact ? "theory-feed theory-feed-compact" : "theory-feed theory-feed-scroll"}>
+      <div className={compact ? "feed-list compact" : "feed-list"}>
         {theories.map((theory) => (
-          <article key={theory.id} className="theory-social-card">
-            <header className="theory-social-header">
-              <div className="theory-author">
-                <div className="author-avatar">{theory.authorInitial}</div>
-                <div>
-                  <strong>{theory.author?.username ?? "Usuario"}</strong>
-                  <p className="theory-meta">
-                    {new Date(theory.createdAt).toLocaleString("es-ES")}
-                  </p>
-                </div>
-              </div>
-              <span className="pill subtle">Score {theory.score}</span>
-            </header>
-
-            <div className="theory-social-content">
-              <h3>{theory.title}</h3>
-              <p>{compact ? theory.excerpt : theory.content}</p>
-            </div>
-
-            <div className="theory-topic-row">
-              {theory.topics.map((topic) => (
-                <span key={`${theory.id}-${topic.slug}`} className="topic-tag">
-                  #{topic.label}
-                </span>
-              ))}
-            </div>
-
-            <footer className="theory-social-footer">
-              <div className="vote-cluster">
-                <button
-                  type="button"
-                  className={theory.viewerVote === 1 ? "vote-button active-like" : "vote-button"}
-                  onClick={() => handleVote(theory.id, 1)}
-                  disabled={votingId === theory.id}
-                >
-                  Like
-                </button>
-                <button
-                  type="button"
-                  className={theory.viewerVote === -1 ? "vote-button active-dislike" : "vote-button"}
-                  onClick={() => handleVote(theory.id, -1)}
-                  disabled={votingId === theory.id}
-                >
-                  Dislike
-                </button>
-              </div>
-              <span className="social-action">Debate abierto</span>
-              <span className="social-action">Autor visible</span>
-            </footer>
-          </article>
+          <TheoryCard
+            key={theory.id}
+            theory={theory}
+            compact={compact}
+            onVote={handleVote}
+            voting={votingId === theory.id}
+          />
         ))}
 
         {!loading && theories.length === 0 ? (

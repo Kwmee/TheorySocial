@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PopularTheoryDeck } from "../components/PopularTheoryDeck";
 import { TheoryComposer } from "../components/TheoryComposer";
 import { TheoryList } from "../components/TheoryList";
@@ -6,8 +7,16 @@ import { TheorySearchModal } from "../components/TheorySearchModal";
 import { useAuth } from "../hooks/useAuth";
 import { useTheories } from "../hooks/useTheories";
 
+const SECTIONS = [
+  { id: "read", label: "Inicio", eyebrow: "Feed", title: "Teorias de la comunidad" },
+  { id: "popular", label: "Descubrir", eyebrow: "Swipe", title: "Descubre teorias populares" },
+  { id: "compose", label: "Crear", eyebrow: "Editor", title: "Publica una nueva teoria" },
+  { id: "search", label: "Buscar", eyebrow: "Filtro", title: "Busca por tema o autor" },
+];
+
 export function HomePage() {
-  const { user, completeSwipeTutorial } = useAuth();
+  const { user, logout, completeSwipeTutorial } = useAuth();
+  const navigate = useNavigate();
   const {
     loading,
     popularLoading,
@@ -23,110 +32,205 @@ export function HomePage() {
     popularTheories,
     filteredTheories,
   } = useTheories();
-  const [activeSection, setActiveSection] = useState("popular");
+  const [activeSection, setActiveSection] = useState("read");
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const activeView = SECTIONS.find((section) => section.id === activeSection) ?? SECTIONS[0];
+
+  const handleSelectSection = (sectionId) => {
+    if (sectionId === "search") {
+      setSearchOpen(true);
+      return;
+    }
+
+    setActiveSection(sectionId);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/auth", { replace: true });
+  };
+
   return (
-    <main className="app-shell social-shell">
-      <section className="panel social-hero">
-        <div className="social-hero-copy">
-          <p className="panel-kicker">Portada privada</p>
-          <h2>Prioriza teorias con gestos rapidos y entra al debate solo cuando haga falta.</h2>
-          <p>
-            La vista principal ahora mezcla ranking reciente y mecánica swipe: decidir
-            es inmediato, pero el feed completo y la publicación siguen disponibles
-            cuando necesitas mas contexto.
-          </p>
-        </div>
+    <main className="social-app-shell">
+      <div className="social-app-grid">
+        <aside className="social-sidebar">
+          <div className="sidebar-brand">
+            <p className="brand-mark">Theory Social</p>
+            <h1 className="brand-title">Teorias Humanas</h1>
+            <p className="header-subcopy">
+              Feed privado de ideas, descubrimiento y debate con una estetica social mas limpia.
+            </p>
+          </div>
 
-        <div className="social-hero-metrics">
-          <article className="social-stat-card">
-            <span>Usuario activo</span>
-            <strong>{user?.username}</strong>
-          </article>
-          <article className="social-stat-card">
-            <span>Stack popular</span>
-            <strong>{popularTheories.length}</strong>
-          </article>
-          <article className="social-stat-card">
-            <span>Feed completo</span>
-            <strong>{filteredTheories.length}</strong>
-          </article>
-          <article className="social-stat-card">
-            <span>Tutorial swipe</span>
-            <strong>{user?.swipeTutorialSeen ? "Visto" : "Pendiente"}</strong>
-          </article>
-          <article className="social-stat-card">
-            <span>Temas detectados</span>
-            <strong>{Math.max(topicOptions.length - 1, 0)}</strong>
-          </article>
-        </div>
-      </section>
+          <nav className="sidebar-nav" aria-label="Secciones principales">
+            {SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                className={activeSection === section.id ? "sidebar-nav-item active" : "sidebar-nav-item"}
+                onClick={() => handleSelectSection(section.id)}
+              >
+                <span className="sidebar-nav-title">{section.label}</span>
+                <span className="sidebar-nav-copy">{section.eyebrow}</span>
+              </button>
+            ))}
+          </nav>
 
-      <section className="forum-toolbar">
-        <button
-          type="button"
-          className={activeSection === "popular" ? "forum-toolbar-button active" : "forum-toolbar-button"}
-          onClick={() => setActiveSection("popular")}
-        >
-          Teorias populares
-        </button>
-        <button
-          type="button"
-          className={activeSection === "compose" ? "forum-toolbar-button active" : "forum-toolbar-button"}
-          onClick={() => setActiveSection("compose")}
-        >
-          Insertar nueva teoria
-        </button>
-        <button
-          type="button"
-          className="forum-toolbar-button"
-          onClick={() => setSearchOpen(true)}
-        >
-          Buscar teorias
-        </button>
-        <button
-          type="button"
-          className={activeSection === "read" ? "forum-toolbar-button active" : "forum-toolbar-button"}
-          onClick={() => setActiveSection("read")}
-        >
-          Leer teorias
-        </button>
-      </section>
+          <div className="sidebar-card user-summary-card">
+            <div className="theory-author">
+              <div className="author-avatar">{user?.username?.slice(0, 1).toUpperCase() ?? "U"}</div>
+              <div className="theory-author-meta">
+                <strong>{user?.username}</strong>
+                <p className="theory-meta">
+                  {user?.swipeTutorialSeen ? "Tutorial swipe completado" : "Tutorial swipe pendiente"}
+                </p>
+              </div>
+            </div>
+            <button type="button" className="ghost-button sidebar-logout" onClick={handleLogout}>
+              Cerrar sesion
+            </button>
+          </div>
 
-      {activeSection === "popular" ? (
-        <section className="forum-section">
-          <PopularTheoryDeck
-            theories={popularTheories}
-            loading={popularLoading}
-            error={popularError}
-            onVote={voteTheory}
-            tutorialSeen={Boolean(user?.swipeTutorialSeen)}
-            onCompleteTutorial={completeSwipeTutorial}
-          />
+          <div className="sidebar-card metrics-card">
+            <p className="panel-kicker">Resumen</p>
+            <div className="sidebar-metric-grid">
+              <article>
+                <span>Feed</span>
+                <strong>{filteredTheories.length}</strong>
+              </article>
+              <article>
+                <span>Descubrir</span>
+                <strong>{popularTheories.length}</strong>
+              </article>
+              <article>
+                <span>Temas</span>
+                <strong>{Math.max(topicOptions.length - 1, 0)}</strong>
+              </article>
+              <article>
+                <span>Terminos</span>
+                <strong>{user?.acceptedTerms ? "OK" : "Pend"}</strong>
+              </article>
+            </div>
+          </div>
+        </aside>
+
+        <section className="social-main-column">
+          <header className="feed-masthead">
+            <div>
+              <p className="panel-kicker">{activeView.eyebrow}</p>
+              <h2>{activeView.title}</h2>
+              <p className="feed-masthead-copy">
+                Diseno tipo red social con una columna central clara, navegacion persistente y modo
+                descubrir separado para el swipe.
+              </p>
+            </div>
+            <div className="feed-masthead-actions">
+              <button type="button" className="ghost-button" onClick={() => setSearchOpen(true)}>
+                Buscar
+              </button>
+              <button type="button" className="primary-action" onClick={() => setActiveSection("compose")}>
+                Nueva teoria
+              </button>
+            </div>
+          </header>
+
+          <section className="story-strip" aria-label="Indicadores de actividad">
+            <article className="story-chip">
+              <span>Usuario</span>
+              <strong>{user?.username}</strong>
+            </article>
+            <article className="story-chip">
+              <span>Popular ahora</span>
+              <strong>{popularTheories.length}</strong>
+            </article>
+            <article className="story-chip">
+              <span>Feed activo</span>
+              <strong>{filteredTheories.length}</strong>
+            </article>
+            <article className="story-chip">
+              <span>Tutorial</span>
+              <strong>{user?.swipeTutorialSeen ? "Visto" : "Pendiente"}</strong>
+            </article>
+          </section>
+
+          <section className="social-content-panel">
+            {activeSection === "popular" ? (
+              <PopularTheoryDeck
+                theories={popularTheories}
+                loading={popularLoading}
+                error={popularError}
+                onVote={voteTheory}
+                tutorialSeen={Boolean(user?.swipeTutorialSeen)}
+                onCompleteTutorial={completeSwipeTutorial}
+              />
+            ) : null}
+
+            {activeSection === "compose" ? <TheoryComposer onSubmit={createTheory} /> : null}
+
+            {activeSection === "read" ? (
+              <TheoryList
+                theories={filteredTheories}
+                loading={loading}
+                error={error}
+                onVote={voteTheory}
+                kicker="Feed"
+                title="Teorias recientes"
+                emptyTitle="No hay teorias disponibles."
+                emptyCopy="Publica una teoria nueva o usa la busqueda para explorar otros temas."
+              />
+            ) : null}
+          </section>
         </section>
-      ) : null}
 
-      {activeSection === "compose" ? (
-        <section className="forum-section">
-          <TheoryComposer onSubmit={createTheory} />
-        </section>
-      ) : null}
+        <aside className="social-right-rail">
+          <div className="rail-card">
+            <p className="panel-kicker">Modo activo</p>
+            <h3>{activeView.label}</h3>
+            <p>
+              El feed principal conserva lectura y votacion lineal. El swipe sigue operativo como
+              un modo de descubrimiento independiente.
+            </p>
+          </div>
 
-      {activeSection === "read" ? (
-        <section className="forum-section">
-          <TheoryList
-            theories={filteredTheories}
-            loading={loading}
-            error={error}
-            onVote={voteTheory}
-            kicker="Lectura"
-            title="Feed escroleable de teorias"
-            emptyTitle="No hay teorias disponibles."
-            emptyCopy="Publica una teoria nueva o usa la busqueda para explorar otros temas."
-          />
-        </section>
-      ) : null}
+          <div className="rail-card">
+            <p className="panel-kicker">Lenguaje visual</p>
+            <h3>Instagram, pero tecnico</h3>
+            <p>
+              Tarjetas limpias, sidebar persistente, sombras suaves y micro-interacciones usando
+              transform y opacity.
+            </p>
+          </div>
+
+          <div className="rail-card">
+            <p className="panel-kicker">Acceso rapido</p>
+            <div className="rail-action-list">
+              <button type="button" className="ghost-button" onClick={() => setActiveSection("read")}>
+                Ver feed
+              </button>
+              <button type="button" className="ghost-button" onClick={() => setActiveSection("popular")}>
+                Abrir descubrir
+              </button>
+              <button type="button" className="ghost-button" onClick={() => setSearchOpen(true)}>
+                Filtrar teorias
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <nav className="mobile-bottom-nav" aria-label="Navegacion movil">
+        {SECTIONS.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            className={activeSection === section.id ? "mobile-bottom-item active" : "mobile-bottom-item"}
+            onClick={() => handleSelectSection(section.id)}
+          >
+            {section.label}
+          </button>
+        ))}
+      </nav>
 
       <TheorySearchModal
         open={searchOpen}

@@ -30,7 +30,7 @@ export function TheorySearchModal({
         <div className="auth-panel-top">
           <div>
             <p className="panel-kicker">Buscar teorias</p>
-            <h2>Encuentra conversaciones por tema o termino.</h2>
+            <h2>Encuentra conversaciones por tema, autor o lenguaje clave.</h2>
           </div>
           <p className="auth-panel-copy">
             Este buscador filtra por titulo, contenido, autor y tema detectado.
