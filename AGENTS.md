@@ -36,6 +36,11 @@
 - La experiencia social autenticada debe seguir un layout tipo Instagram: sidebar fija en escritorio, barra inferior en movil y columna central de contenido.
 - El modo swipe debe mantenerse operativo como una seccion `Descubrir` separada del feed principal.
 - Las teorias del feed deben renderizarse como cards limpias con cabecera, cuerpo legible y acciones de voto integradas.
+- Los debates deben implementarse como respuestas de un solo nivel para el MVP; no se deben introducir hilos anidados sin una necesidad funcional clara.
+- Cada respuesta debe tener autor, score y un unico voto activo por usuario, con actualizacion atomica del contador.
+- Debe existir una vista `Mis teorias` accesible desde `/profile` para que cada usuario gestione y revise su propio contenido.
+- Cualquier cambio de esquema en MySQL debe documentarse con SQL explicito para implantacion manual fuera del entorno local.
+- Las operaciones de edicion y eliminacion sobre teorias o respuestas deben validar autoria en backend antes de persistir cambios.
 - Las micro-interacciones visuales deben priorizar `transform` y `opacity` para rendimiento GPU y evitar lag perceptible.
 - La paleta principal de acento debe inspirarse en Instagram: rosa, violeta y amarillo para gradientes y estados destacados.
 - Evitar acciones o iconos duplicados: cada accion principal debe aparecer en un unico lugar logico de la interfaz.
