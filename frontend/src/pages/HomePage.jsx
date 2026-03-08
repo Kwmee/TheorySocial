@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PopularTheoryDeck } from "../components/PopularTheoryDeck";
+import { SocialNavigation } from "../components/SocialNavigation";
 import { TheoryComposer } from "../components/TheoryComposer";
 import { TheoryList } from "../components/TheoryList";
 import { TheorySearchModal } from "../components/TheorySearchModal";
@@ -63,19 +64,11 @@ export function HomePage() {
             </p>
           </div>
 
-          <nav className="sidebar-nav" aria-label="Secciones principales">
-            {SECTIONS.map((section) => (
-              <button
-                key={section.id}
-                type="button"
-                className={activeSection === section.id ? "sidebar-nav-item active" : "sidebar-nav-item"}
-                onClick={() => handleSelectSection(section.id)}
-              >
-                <span className="sidebar-nav-title">{section.label}</span>
-                <span className="sidebar-nav-copy">{section.eyebrow}</span>
-              </button>
-            ))}
-          </nav>
+          <SocialNavigation
+            sections={SECTIONS}
+            activeSection={activeSection}
+            onSelect={handleSelectSection}
+          />
 
           <div className="sidebar-card user-summary-card">
             <div className="theory-author">
@@ -124,14 +117,6 @@ export function HomePage() {
                 Diseno tipo red social con una columna central clara, navegacion persistente y modo
                 descubrir separado para el swipe.
               </p>
-            </div>
-            <div className="feed-masthead-actions">
-              <button type="button" className="ghost-button" onClick={() => setSearchOpen(true)}>
-                Buscar
-              </button>
-              <button type="button" className="primary-action" onClick={() => setActiveSection("compose")}>
-                Nueva teoria
-              </button>
             </div>
           </header>
 
@@ -182,55 +167,16 @@ export function HomePage() {
             ) : null}
           </section>
         </section>
-
-        <aside className="social-right-rail">
-          <div className="rail-card">
-            <p className="panel-kicker">Modo activo</p>
-            <h3>{activeView.label}</h3>
-            <p>
-              El feed principal conserva lectura y votacion lineal. El swipe sigue operativo como
-              un modo de descubrimiento independiente.
-            </p>
-          </div>
-
-          <div className="rail-card">
-            <p className="panel-kicker">Lenguaje visual</p>
-            <h3>Instagram, pero tecnico</h3>
-            <p>
-              Tarjetas limpias, sidebar persistente, sombras suaves y micro-interacciones usando
-              transform y opacity.
-            </p>
-          </div>
-
-          <div className="rail-card">
-            <p className="panel-kicker">Acceso rapido</p>
-            <div className="rail-action-list">
-              <button type="button" className="ghost-button" onClick={() => setActiveSection("read")}>
-                Ver feed
-              </button>
-              <button type="button" className="ghost-button" onClick={() => setActiveSection("popular")}>
-                Abrir descubrir
-              </button>
-              <button type="button" className="ghost-button" onClick={() => setSearchOpen(true)}>
-                Filtrar teorias
-              </button>
-            </div>
-          </div>
-        </aside>
       </div>
 
-      <nav className="mobile-bottom-nav" aria-label="Navegacion movil">
-        {SECTIONS.map((section) => (
-          <button
-            key={section.id}
-            type="button"
-            className={activeSection === section.id ? "mobile-bottom-item active" : "mobile-bottom-item"}
-            onClick={() => handleSelectSection(section.id)}
-          >
-            {section.label}
-          </button>
-        ))}
-      </nav>
+      <div className="mobile-bottom-nav">
+        <SocialNavigation
+          sections={SECTIONS}
+          activeSection={activeSection}
+          onSelect={handleSelectSection}
+          variant="mobile"
+        />
+      </div>
 
       <TheorySearchModal
         open={searchOpen}
