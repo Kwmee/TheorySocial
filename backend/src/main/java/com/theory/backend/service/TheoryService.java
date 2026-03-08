@@ -70,8 +70,8 @@ public class TheoryService {
 
     @Transactional
     public TheoryResponse vote(Long theoryId, String username, int voteValue) {
-        if (voteValue != -1 && voteValue != 1) {
-            throw new IllegalArgumentException("Vote value must be 1 or -1");
+        if (voteValue != -1 && voteValue != 0 && voteValue != 1) {
+            throw new IllegalArgumentException("Vote value must be 1, 0 or -1");
         }
 
         Theory theory = theoryRepository.findByIdForUpdate(theoryId)
@@ -93,9 +93,16 @@ public class TheoryService {
             return TheoryResponse.from(theory, previousValue);
         }
 
-        vote.setValue(voteValue);
-        theory.setScore(theory.getScore() - previousValue + voteValue);
+        int scoreDelta = Integer.compare(voteValue, previousValue);
+        theory.setScore(theory.getScore() + scoreDelta);
+        if (voteValue == 0) {
+            if (vote.getId() != null) {
+                theoryVoteRepository.delete(vote);
+            }
+            return TheoryResponse.from(theoryRepository.save(theory), 0);
+        }
 
+        vote.setValue(voteValue);
         theoryVoteRepository.save(vote);
         return TheoryResponse.from(theoryRepository.save(theory), voteValue);
     }

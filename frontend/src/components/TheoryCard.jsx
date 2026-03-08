@@ -6,6 +6,14 @@ export function TheoryCard({
 }) {
   const content = compact ? theory.excerpt : theory.content;
 
+  const resolveVoteValue = (clickedValue) => {
+    if (theory.viewerVote === clickedValue) {
+      return 0;
+    }
+
+    return clickedValue;
+  };
+
   return (
     <article className="theory-card">
       <header className="theory-card-header">
@@ -37,7 +45,7 @@ export function TheoryCard({
           <button
             type="button"
             className={theory.viewerVote === 1 ? "vote-chip active-like" : "vote-chip"}
-            onClick={() => onVote?.(theory.id, 1)}
+            onClick={() => onVote?.(theory.id, resolveVoteValue(1))}
             disabled={voting}
             aria-pressed={theory.viewerVote === 1}
           >
@@ -46,7 +54,7 @@ export function TheoryCard({
           <button
             type="button"
             className={theory.viewerVote === -1 ? "vote-chip active-dislike" : "vote-chip"}
-            onClick={() => onVote?.(theory.id, -1)}
+            onClick={() => onVote?.(theory.id, resolveVoteValue(-1))}
             disabled={voting}
             aria-pressed={theory.viewerVote === -1}
           >

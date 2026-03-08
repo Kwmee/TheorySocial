@@ -1,24 +1,24 @@
-export function SocialNavigation({
-  sections,
-  activeSection,
-  onSelect,
-  variant = "sidebar",
-}) {
-  const className =
-    variant === "mobile" ? "social-navigation social-navigation-mobile" : "social-navigation";
+import { NavLink } from "react-router-dom";
 
+const NAV_ITEMS = [
+  { to: "/", label: "Inicio" },
+  { to: "/discover", label: "Descubrir" },
+  { to: "/create", label: "Crear" },
+  { to: "/search", label: "Buscar" },
+];
+
+export function SocialNavigation() {
   return (
-    <nav className={className} aria-label="Navegacion principal">
-      {sections.map((section) => (
-        <button
-          key={section.id}
-          type="button"
-          className={activeSection === section.id ? "social-nav-item active" : "social-nav-item"}
-          onClick={() => onSelect(section.id)}
+    <nav className="social-navigation" aria-label="Navegacion principal">
+      {NAV_ITEMS.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.to === "/"}
+          className={({ isActive }) => (isActive ? "social-nav-link active" : "social-nav-link")}
         >
-          <span className="social-nav-label">{section.label}</span>
-          {variant === "sidebar" ? <span className="social-nav-copy">{section.eyebrow}</span> : null}
-        </button>
+          {item.label}
+        </NavLink>
       ))}
     </nav>
   );
