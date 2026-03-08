@@ -46,7 +46,7 @@ export function TheoryList({
       {error ? <p className="error">{error}</p> : null}
       {voteError ? <p className="error">{voteError}</p> : null}
 
-      <div className={compact ? "feed-list compact" : "feed-list"}>
+      <div className={compact ? "feed-list compact" : "feed-list"} aria-live="polite">
         {theories.map((theory) => (
           <TheoryCard
             key={theory.id}

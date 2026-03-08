@@ -16,9 +16,7 @@ export function TheoryCard({
             <p className="theory-meta">{new Date(theory.createdAt).toLocaleString("es-ES")}</p>
           </div>
         </div>
-        <button type="button" className="theory-card-menu" aria-label="Opciones de teoria">
-          ...
-        </button>
+        <span className="vote-total">Score {theory.score}</span>
       </header>
 
       <div className="theory-card-copy">
@@ -57,7 +55,6 @@ export function TheoryCard({
         </div>
 
         <div className="theory-card-stats">
-          <span className="vote-total">Score {theory.score}</span>
           <span className="social-action">Debate abierto</span>
         </div>
       </footer>

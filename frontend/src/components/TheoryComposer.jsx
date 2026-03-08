@@ -37,6 +37,10 @@ export function TheoryComposer({ onSubmit }) {
         <div>
           <p className="panel-kicker">Nueva publicacion</p>
           <h2>Escribe una teoria con el tono de un post largo y legible.</h2>
+          <p className="feed-masthead-copy">
+            Estructura una hipotesis clara, desarrolla el contexto y deja espacio para que la
+            comunidad la contraste.
+          </p>
         </div>
       </div>
 

@@ -253,7 +253,7 @@ export function PopularTheoryDeck({
         <aside className="swipe-side-panel">
           <div className="swipe-side-card">
             <p className="panel-kicker">Interaccion</p>
-            <h3>Feed principal con decisiones rapidas</h3>
+            <h3>Descubrir con decisiones rapidas</h3>
             <p>
               El ranking se ordena por votos netos recientes y volumen de interaccion. Cada
               swipe actualiza el score persistido del backend.
