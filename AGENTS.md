@@ -32,12 +32,15 @@
 - El tutorial de swipe para nuevos usuarios debe persistirse en base de datos en el usuario, nunca solo en frontend.
 - El sistema de votos debe garantizar un unico voto activo por usuario y teoria, con actualizacion consistente del score.
 - El ranking de popularidad debe basarse en votos netos recientes y apoyarse en indices SQL cuando aplique.
-- Mantener tema visual consistente mediante variables CSS con paleta lila oscura.
+- Mantener tema visual consistente mediante variables CSS y soporte nativo de modo claro/oscuro segun `prefers-color-scheme`.
 - La experiencia social autenticada debe seguir un layout tipo Instagram: sidebar fija en escritorio, barra inferior en movil y columna central de contenido.
 - El modo swipe debe mantenerse operativo como una seccion `Descubrir` separada del feed principal.
 - Las teorias del feed deben renderizarse como cards limpias con cabecera, cuerpo legible y acciones de voto integradas.
 - Las micro-interacciones visuales deben priorizar `transform` y `opacity` para rendimiento GPU y evitar lag perceptible.
-- Cualquier refactor visual debe mantener contraste compatible con WCAG 2.2 dentro del tema lila oscuro.
+- La paleta principal de acento debe inspirarse en Instagram: rosa, violeta y amarillo para gradientes y estados destacados.
+- Evitar acciones o iconos duplicados: cada accion principal debe aparecer en un unico lugar logico de la interfaz.
+- Priorizar `Container Queries`, `Grid` y `Flexbox` para adaptacion dinamica por contenedor, no solo por viewport.
+- Cualquier refactor visual debe mantener contraste compatible con WCAG 2.2 tanto en modo claro como en modo oscuro.
 
 ## Validacion minima esperada
 - Backend compila con Maven.

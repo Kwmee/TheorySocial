@@ -32,7 +32,7 @@ export function TermsModal() {
           Aceptas publicar contenido propio, respetar el debate civil y no
           reutilizar la plataforma para abuso, acoso o suplantacion.
         </p>
-        <button onClick={handleAccept} disabled={submitting}>
+        <button className="primary-action" onClick={handleAccept} disabled={submitting}>
           {submitting ? "Guardando..." : "Aceptar y continuar"}
         </button>
         {error ? <p className="error">{error}</p> : null}
