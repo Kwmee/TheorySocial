@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   acceptTerms as acceptTermsRequest,
+  completeSwipeTutorial as completeSwipeTutorialRequest,
   fetchCurrentUser,
   login as loginRequest,
   logout as logoutRequest,
@@ -63,6 +64,12 @@ export function AuthProvider({ children }) {
     return updatedUser;
   };
 
+  const completeSwipeTutorial = async () => {
+    const updatedUser = await completeSwipeTutorialRequest();
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -73,6 +80,7 @@ export function AuthProvider({ children }) {
         signup,
         logout,
         acceptTerms,
+        completeSwipeTutorial,
       }}
     >
       {children}

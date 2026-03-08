@@ -28,6 +28,10 @@
 - Evitar acoplamientos innecesarios entre frontend y backend.
 - Bloquear todo el contenido del frontend para usuarios no autenticados.
 - Persistir la aceptacion de terminos y condiciones en base de datos, nunca solo en navegador.
+- La portada principal debe priorizar una vista de `Teorias Populares` con interaccion tipo swipe.
+- El tutorial de swipe para nuevos usuarios debe persistirse en base de datos en el usuario, nunca solo en frontend.
+- El sistema de votos debe garantizar un unico voto activo por usuario y teoria, con actualizacion consistente del score.
+- El ranking de popularidad debe basarse en votos netos recientes y apoyarse en indices SQL cuando aplique.
 - Mantener tema visual consistente mediante variables CSS con paleta lila oscura.
 
 ## Validacion minima esperada

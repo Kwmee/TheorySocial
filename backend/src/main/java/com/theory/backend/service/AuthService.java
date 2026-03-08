@@ -43,6 +43,7 @@ public class AuthService {
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(rawPassword));
         user.setAcceptedTerms(false);
+        user.setSwipeTutorialSeen(false);
 
         User savedUser = userRepository.save(user);
         authenticateSession(username, rawPassword, request);

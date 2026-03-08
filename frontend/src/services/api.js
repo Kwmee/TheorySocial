@@ -63,6 +63,21 @@ export function fetchTheories() {
   return request("/theories");
 }
 
+export function fetchPopularTheories(options = {}) {
+  const search = new URLSearchParams();
+
+  if (options.days) {
+    search.set("days", options.days);
+  }
+
+  if (options.limit) {
+    search.set("limit", options.limit);
+  }
+
+  const suffix = search.size > 0 ? `?${search.toString()}` : "";
+  return request(`/theories/popular${suffix}`);
+}
+
 export function createTheory(payload) {
   return request("/theories", {
     method: "POST",
@@ -74,5 +89,11 @@ export function voteTheory(theoryId, value) {
   return request(`/theories/${theoryId}/vote`, {
     method: "POST",
     body: JSON.stringify({ value }),
+  });
+}
+
+export function completeSwipeTutorial() {
+  return request("/users/me/tutorials/swipe/complete", {
+    method: "POST",
   });
 }

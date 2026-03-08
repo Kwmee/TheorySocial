@@ -80,14 +80,16 @@ public class AuthController {
             Long id,
             String username,
             String email,
-            boolean acceptedTerms
+            boolean acceptedTerms,
+            boolean swipeTutorialSeen
     ) {
         public static AuthResponse from(User user) {
             return new AuthResponse(
                     user.getId(),
                     user.getUsername(),
                     user.getEmail(),
-                    user.isAcceptedTerms()
+                    user.isAcceptedTerms(),
+                    user.isSwipeTutorialSeen()
             );
         }
     }

@@ -10,6 +10,8 @@ import com.theory.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,6 +41,24 @@ public class TheoryService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<TheoryResponse> findPopular(String username, int days, int limit) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(days);
+        List<Long> theoryIds = theoryVoteRepository.findPopularTheoryIdsForUser(user.getId(), cutoff, limit);
+
+        if (theoryIds.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, Integer> positions = buildPositions(theoryIds);
+        return theoryRepository.findAllByIdIn(theoryIds).stream()
+                .sorted(Comparator.comparingInt(theory -> positions.getOrDefault(theory.getId(), Integer.MAX_VALUE)))
+                .map(theory -> TheoryResponse.from(theory, 0))
+                .toList();
+    }
+
     @Transactional
     public TheoryResponse create(Theory theory, String username) {
         User author = userRepository.findByUsername(username)
@@ -54,7 +74,7 @@ public class TheoryService {
             throw new IllegalArgumentException("Vote value must be 1 or -1");
         }
 
-        Theory theory = theoryRepository.findById(theoryId)
+        Theory theory = theoryRepository.findByIdForUpdate(theoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Theory not found"));
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -69,6 +89,10 @@ public class TheoryService {
                 });
 
         int previousValue = vote.getValue();
+        if (previousValue == voteValue) {
+            return TheoryResponse.from(theory, previousValue);
+        }
+
         vote.setValue(voteValue);
         theory.setScore(theory.getScore() - previousValue + voteValue);
 
@@ -92,5 +116,11 @@ public class TheoryService {
 
         return theoryVoteRepository.findAllByUserIdAndTheoryIdIn(user.getId(), theoryIds).stream()
                 .collect(Collectors.toMap(vote -> vote.getTheory().getId(), TheoryVote::getValue));
+    }
+
+    private Map<Long, Integer> buildPositions(List<Long> theoryIds) {
+        return java.util.stream.IntStream.range(0, theoryIds.size())
+                .boxed()
+                .collect(Collectors.toMap(theoryIds::get, index -> index));
     }
 }

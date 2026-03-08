@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(120) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     accepted_terms BOOLEAN NOT NULL DEFAULT FALSE,
+    swipe_tutorial_seen BOOLEAN NOT NULL DEFAULT FALSE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -19,4 +20,17 @@ CREATE TABLE IF NOT EXISTS theories (
     score INT NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_theories_author FOREIGN KEY (author_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS theory_votes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    theory_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    vote_value INT NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_theory_votes_theory FOREIGN KEY (theory_id) REFERENCES theories(id),
+    CONSTRAINT fk_theory_votes_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT uq_theory_votes_theory_user UNIQUE (theory_id, user_id),
+    INDEX idx_theory_votes_user_theory (user_id, theory_id),
+    INDEX idx_theory_votes_updated_theory (updated_at, theory_id)
 );

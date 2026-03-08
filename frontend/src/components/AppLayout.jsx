@@ -25,7 +25,7 @@ export function AppLayout() {
             <NavLink to="/" end>
               Inicio
             </NavLink>
-            <span className="forum-status">Feed general</span>
+            <span className="forum-status">Swipe + feed general</span>
           </nav>
 
           <div className="header-actions header-actions-forum">
@@ -56,7 +56,7 @@ export function AppLayout() {
             </div>
             <div>
               <h3>Escalabilidad</h3>
-              <p>Los filtros actuales pueden migrar a backend sin rehacer la experiencia.</p>
+              <p>El ranking popular ya vive en backend y admite ajustes de ventana temporal sin rehacer la UI.</p>
             </div>
             <div>
               <h3>Evolucion</h3>

@@ -39,6 +39,9 @@ public class User {
     private boolean acceptedTerms = false;
 
     @Column(nullable = false)
+    private boolean swipeTutorialSeen = false;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -98,5 +101,13 @@ public class User {
 
     public void setTheories(List<Theory> theories) {
         this.theories = theories;
+    }
+
+    public boolean isSwipeTutorialSeen() {
+        return swipeTutorialSeen;
+    }
+
+    public void setSwipeTutorialSeen(boolean swipeTutorialSeen) {
+        this.swipeTutorialSeen = swipeTutorialSeen;
     }
 }

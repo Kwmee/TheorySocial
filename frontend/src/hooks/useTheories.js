@@ -1,6 +1,7 @@
 import { useDeferredValue, useEffect, useState } from "react";
 import {
   createTheory as createTheoryRequest,
+  fetchPopularTheories,
   fetchTheories,
   voteTheory as voteTheoryRequest,
 } from "../services/api";
@@ -8,8 +9,11 @@ import { buildTopicOptions, enrichTheory, filterTheories } from "../services/the
 
 export function useTheories() {
   const [theories, setTheories] = useState([]);
+  const [popularTheories, setPopularTheories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [popularLoading, setPopularLoading] = useState(true);
   const [error, setError] = useState("");
+  const [popularError, setPopularError] = useState("");
   const [activeTopic, setActiveTopic] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -37,12 +41,49 @@ export function useTheories() {
       }
     }
 
+    async function loadPopular() {
+      setPopularLoading(true);
+      setPopularError("");
+
+      try {
+        const data = await fetchPopularTheories({ days: 7, limit: 12 });
+        if (active) {
+          setPopularTheories(data.map(enrichTheory));
+        }
+      } catch (requestError) {
+        if (active) {
+          setPopularError(requestError.message);
+        }
+      } finally {
+        if (active) {
+          setPopularLoading(false);
+        }
+      }
+    }
+
     loadTheories();
+    loadPopular();
 
     return () => {
       active = false;
     };
   }, []);
+
+  const reloadPopularTheories = async () => {
+    setPopularLoading(true);
+    setPopularError("");
+
+    try {
+      const data = await fetchPopularTheories({ days: 7, limit: 12 });
+      setPopularTheories(data.map(enrichTheory));
+      return data;
+    } catch (requestError) {
+      setPopularError(requestError.message);
+      throw requestError;
+    } finally {
+      setPopularLoading(false);
+    }
+  };
 
   const createTheory = async (payload) => {
     const created = enrichTheory(await createTheoryRequest(payload));
@@ -55,6 +96,8 @@ export function useTheories() {
     setTheories((current) =>
       current.map((theory) => (theory.id === theoryId ? updatedTheory : theory)),
     );
+    setPopularTheories((current) => current.filter((theory) => theory.id !== theoryId));
+    void reloadPopularTheories().catch(() => {});
     return updatedTheory;
   };
 
@@ -66,6 +109,7 @@ export function useTheories() {
 
   return {
     theories,
+    popularTheories,
     filteredTheories,
     topicOptions,
     activeTopic,
@@ -73,8 +117,11 @@ export function useTheories() {
     searchQuery,
     setSearchQuery,
     loading,
+    popularLoading,
     error,
+    popularError,
     createTheory,
     voteTheory,
+    reloadPopularTheories,
   };
 }
