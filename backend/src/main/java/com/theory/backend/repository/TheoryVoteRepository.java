@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface TheoryVoteRepository extends JpaRepository<TheoryVote, Long> {
     Optional<TheoryVote> findByTheoryIdAndUserId(Long theoryId, Long userId);
     List<TheoryVote> findAllByUserIdAndTheoryIdIn(Long userId, Collection<Long> theoryIds);
+    void deleteAllByTheoryId(Long theoryId);
 
     @Query(
             value = """

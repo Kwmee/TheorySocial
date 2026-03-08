@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,11 @@ public class TheoryController {
         return theoryService.findAll(requireUsername(principal));
     }
 
+    @GetMapping("/me")
+    public List<TheoryResponse> getMyTheories(@AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findMine(requireUsername(principal));
+    }
+
     @GetMapping("/popular")
     public List<TheoryResponse> getPopularTheories(@AuthenticationPrincipal UserDetails principal,
                                                    @RequestParam(defaultValue = "7") @Min(1) @Max(30) int days,
@@ -60,6 +66,13 @@ public class TheoryController {
                                      @Valid @RequestBody VoteTheoryRequest request,
                                      @AuthenticationPrincipal UserDetails principal) {
         return theoryService.vote(id, requireUsername(principal), request.value());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTheory(@PathVariable Long id,
+                             @AuthenticationPrincipal UserDetails principal) {
+        theoryService.delete(id, requireUsername(principal));
     }
 
     private String requireUsername(UserDetails principal) {

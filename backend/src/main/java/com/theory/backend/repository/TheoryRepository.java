@@ -17,6 +17,9 @@ public interface TheoryRepository extends JpaRepository<Theory, Long> {
     @EntityGraph(attributePaths = "author")
     List<Theory> findAllByOrderByCreatedAtDesc();
 
+    @EntityGraph(attributePaths = "author")
+    List<Theory> findAllByAuthorIdOrderByCreatedAtDesc(Long authorId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select t from Theory t where t.id = :id")
     Optional<Theory> findByIdForUpdate(@Param("id") Long id);

@@ -10,16 +10,18 @@ public record TheoryResponse(
         String content,
         int score,
         int viewerVote,
+        long responseCount,
         LocalDateTime createdAt,
         AuthorSummary author
 ) {
-    public static TheoryResponse from(Theory theory, int viewerVote) {
+    public static TheoryResponse from(Theory theory, int viewerVote, long responseCount) {
         return new TheoryResponse(
                 theory.getId(),
                 theory.getTitle(),
                 theory.getContent(),
                 theory.getScore(),
                 viewerVote,
+                responseCount,
                 theory.getCreatedAt(),
                 new AuthorSummary(
                         theory.getAuthor().getId(),

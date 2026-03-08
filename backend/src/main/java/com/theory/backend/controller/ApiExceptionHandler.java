@@ -2,6 +2,7 @@ package com.theory.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,6 +23,12 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map<String, String> handleBadCredentials(BadCredentialsException exception) {
         return Map.of("message", "Invalid username or password");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, String> handleAccessDenied(AccessDeniedException exception) {
+        return Map.of("message", exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
