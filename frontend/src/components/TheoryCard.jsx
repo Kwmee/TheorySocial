@@ -1,10 +1,21 @@
+import { useEffect, useState } from "react";
+import { TheoryReplies } from "./TheoryReplies";
+
 export function TheoryCard({
   theory,
   compact = false,
   onVote,
   voting = false,
+  onDelete,
+  deleting = false,
 }) {
+  const [discussionOpen, setDiscussionOpen] = useState(false);
+  const [replyCount, setReplyCount] = useState(theory.responseCount ?? 0);
   const content = compact ? theory.excerpt : theory.content;
+
+  useEffect(() => {
+    setReplyCount(theory.responseCount ?? 0);
+  }, [theory.responseCount]);
 
   const resolveVoteValue = (clickedValue) => {
     if (theory.viewerVote === clickedValue) {
@@ -63,9 +74,28 @@ export function TheoryCard({
         </div>
 
         <div className="theory-card-stats">
-          <span className="social-action">Debate abierto</span>
+          <button
+            type="button"
+            className={discussionOpen ? "vote-chip active-like" : "vote-chip"}
+            onClick={() => setDiscussionOpen((current) => !current)}
+            aria-expanded={discussionOpen}
+          >
+            {discussionOpen ? "Ocultar debate" : "Abrir debate"} ({replyCount})
+          </button>
+          {onDelete ? (
+            <button type="button" className="vote-chip delete-chip" onClick={() => onDelete(theory.id)} disabled={deleting}>
+              {deleting ? "Eliminando..." : "Eliminar"}
+            </button>
+          ) : null}
         </div>
       </footer>
+
+      <TheoryReplies
+        theory={theory}
+        open={discussionOpen}
+        onOpen={() => setDiscussionOpen(true)}
+        onCountChange={setReplyCount}
+      />
     </article>
   );
 }

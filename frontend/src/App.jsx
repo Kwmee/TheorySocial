@@ -6,6 +6,7 @@ import { AuthPage } from "./pages/AuthPage";
 import { CreatePage } from "./pages/CreatePage";
 import { DiscoverPage } from "./pages/DiscoverPage";
 import { HomePage } from "./pages/HomePage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { SearchPage } from "./pages/SearchPage";
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="discover" element={<DiscoverPage />} />
           <Route path="create" element={<CreatePage />} />
           <Route path="search" element={<SearchPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

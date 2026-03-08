@@ -63,6 +63,10 @@ export function fetchTheories() {
   return request("/theories");
 }
 
+export function fetchMyTheories() {
+  return request("/theories/me");
+}
+
 export function fetchPopularTheories(options = {}) {
   const search = new URLSearchParams();
 
@@ -89,6 +93,36 @@ export function voteTheory(theoryId, value) {
   return request(`/theories/${theoryId}/vote`, {
     method: "POST",
     body: JSON.stringify({ value }),
+  });
+}
+
+export function deleteTheory(theoryId) {
+  return request(`/theories/${theoryId}`, {
+    method: "DELETE",
+  });
+}
+
+export function fetchTheoryResponses(theoryId) {
+  return request(`/theories/${theoryId}/responses`);
+}
+
+export function createTheoryResponse(theoryId, payload) {
+  return request(`/theories/${theoryId}/responses`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function voteTheoryResponse(responseId, value) {
+  return request(`/responses/${responseId}/vote`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+}
+
+export function deleteTheoryResponse(responseId) {
+  return request(`/responses/${responseId}`, {
+    method: "DELETE",
   });
 }
 

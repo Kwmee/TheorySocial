@@ -5,6 +5,7 @@ const NAV_ITEMS = [
   { to: "/discover", label: "Descubrir" },
   { to: "/create", label: "Crear" },
   { to: "/search", label: "Buscar" },
+  { to: "/profile", label: "Mi perfil" },
 ];
 
 export function SocialNavigation() {

@@ -1039,7 +1039,7 @@ p {
   display: grid;
   align-content: start;
   gap: 18px;
-  padding: 24px;
+  padding: 72px 24px 24px;
   width: auto;
   max-width: calc(100% - 32px);
   border-radius: 28px;
@@ -1079,13 +1079,14 @@ p {
 
 .swipe-card-badge {
   position: absolute;
-  top: 22px;
+  top: 18px;
   padding: 10px 14px;
   border-radius: 999px;
   border: 1px solid currentColor;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  z-index: 2;
 }
 
 .swipe-card-badge-like {
@@ -1837,6 +1838,12 @@ p {
   border-color: rgba(195, 59, 100, 0.24);
 }
 
+.delete-chip {
+  color: var(--danger);
+  border-color: rgba(195, 59, 100, 0.2);
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface-soft));
+}
+
 .vote-total {
   padding: 9px 12px;
   border-radius: 999px;
@@ -1868,6 +1875,70 @@ p {
 .editor-form textarea {
   min-height: 220px;
   resize: vertical;
+}
+
+.theory-replies {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.reply-composer,
+.reply-thread,
+.reply-empty {
+  display: grid;
+  gap: 14px;
+}
+
+.reply-composer textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.reply-composer-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.reply-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+}
+
+.reply-card-header,
+.reply-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.reply-card-copy {
+  color: var(--muted-strong);
+  line-height: 1.72;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.reply-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 0.9rem;
+}
+
+.profile-hero {
+  display: grid;
+  gap: 12px;
 }
 
 .discover-panel .popular-intro {
@@ -1971,6 +2042,8 @@ p {
 
   .theory-card-header,
   .theory-card-footer,
+  .reply-card-header,
+  .reply-card-footer,
   .discover-panel .swipe-card-header,
   .discover-panel .swipe-card-footer {
     flex-direction: column;

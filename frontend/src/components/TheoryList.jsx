@@ -6,6 +6,8 @@ export function TheoryList({
   loading,
   error,
   onVote,
+  onDelete,
+  deletingId = null,
   title = "Conversaciones activas",
   kicker = "Feed privado",
   emptyTitle = "No hay teorias todavia.",
@@ -54,6 +56,8 @@ export function TheoryList({
             compact={compact}
             onVote={handleVote}
             voting={votingId === theory.id}
+            onDelete={onDelete}
+            deleting={deletingId === theory.id}
           />
         ))}
 

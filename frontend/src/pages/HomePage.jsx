@@ -3,6 +3,15 @@ import { useTheories } from "../hooks/useTheories";
 
 export function HomePage() {
   const { loading, error, filteredTheories, voteTheory } = useTheories();
+  const topVotedTheories = [...filteredTheories]
+    .sort((left, right) => {
+      if (right.score !== left.score) {
+        return right.score - left.score;
+      }
+
+      return new Date(right.createdAt) - new Date(left.createdAt);
+    })
+    .slice(0, 10);
 
   return (
     <main className="social-route-shell">
@@ -19,12 +28,12 @@ export function HomePage() {
         </header>
 
         <TheoryList
-          theories={filteredTheories}
+          theories={topVotedTheories}
           loading={loading}
           error={error}
           onVote={voteTheory}
           kicker="Feed"
-          title="Teorias recientes"
+          title="Top 10 teorias mas votadas"
           emptyTitle="No hay teorias disponibles."
           emptyCopy="Publica una teoria nueva o vuelve mas tarde para descubrir nuevas ideas."
         />
