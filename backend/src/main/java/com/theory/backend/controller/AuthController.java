@@ -80,6 +80,8 @@ public class AuthController {
             Long id,
             String username,
             String email,
+            String profileImageUrl,
+            String bio,
             boolean acceptedTerms,
             boolean swipeTutorialSeen
     ) {
@@ -88,6 +90,8 @@ public class AuthController {
                     user.getId(),
                     user.getUsername(),
                     user.getEmail(),
+                    user.getProfileImageUrl(),
+                    user.getBio(),
                     user.isAcceptedTerms(),
                     user.isSwipeTutorialSeen()
             );

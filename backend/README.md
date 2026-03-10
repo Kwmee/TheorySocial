@@ -17,3 +17,7 @@ mvn spring-boot:run
 - `POST /api/auth/signup` y `POST /api/auth/login` son publicos.
 - Todo el resto de endpoints `/api/**` requiere sesion autenticada.
 - La sesion se mantiene por cookie HTTP y el frontend debe enviar `credentials: "include"`.
+
+## Cambio manual de esquema
+- Para habilitar foto de perfil por URL ejecuta `database/manual-profile-image-migration.sql` sobre MySQL.
+- Los nuevos campos persistidos son `users.profile_image_url` y `users.bio`.

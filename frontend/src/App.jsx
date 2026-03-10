@@ -8,6 +8,7 @@ import { DiscoverPage } from "./pages/DiscoverPage";
 import { HomePage } from "./pages/HomePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SearchPage } from "./pages/SearchPage";
+import { TopTheoriesPage } from "./pages/TopTheoriesPage";
 
 export default function App() {
   return (
@@ -23,10 +24,12 @@ export default function App() {
           }
         >
           <Route index element={<HomePage />} />
+          <Route path="top" element={<TopTheoriesPage />} />
           <Route path="discover" element={<DiscoverPage />} />
           <Route path="create" element={<CreatePage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="users/:username" element={<ProfilePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

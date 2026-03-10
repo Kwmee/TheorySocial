@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     accepted_terms BOOLEAN NOT NULL DEFAULT FALSE,
     swipe_tutorial_seen BOOLEAN NOT NULL DEFAULT FALSE,
+    profile_image_url VARCHAR(500) NULL,
+    bio VARCHAR(320) NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

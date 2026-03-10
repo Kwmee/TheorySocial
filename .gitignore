@@ -16,6 +16,7 @@ tools/
 .env
 backend/.env
 frontend/.env
+uploads/
 
 # OS
 Thumbs.db

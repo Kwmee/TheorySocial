@@ -44,11 +44,23 @@ public class TheoryController {
         return theoryService.findMine(requireUsername(principal));
     }
 
+    @GetMapping("/by-user/{username}")
+    public List<TheoryResponse> getTheoriesByUser(@PathVariable String username,
+                                                  @AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findByAuthor(requireUsername(principal), username);
+    }
+
     @GetMapping("/popular")
     public List<TheoryResponse> getPopularTheories(@AuthenticationPrincipal UserDetails principal,
                                                    @RequestParam(defaultValue = "7") @Min(1) @Max(30) int days,
                                                    @RequestParam(defaultValue = "12") @Min(1) @Max(50) int limit) {
         return theoryService.findPopular(requireUsername(principal), days, limit);
+    }
+
+    @GetMapping("/top")
+    public List<TheoryResponse> getTopTheories(@AuthenticationPrincipal UserDetails principal,
+                                               @RequestParam(defaultValue = "5") @Min(1) @Max(20) int limit) {
+        return theoryService.findTop(requireUsername(principal), limit);
     }
 
     @PostMapping

@@ -25,7 +25,8 @@ public record TheoryReplyResponse(
                 reply.getUpdatedAt(),
                 new TheoryResponse.AuthorSummary(
                         reply.getAuthor().getId(),
-                        reply.getAuthor().getUsername()
+                        reply.getAuthor().getUsername(),
+                        reply.getAuthor().getProfileImageUrl()
                 )
         );
     }

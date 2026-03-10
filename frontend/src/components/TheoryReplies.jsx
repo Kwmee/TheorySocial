@@ -6,6 +6,8 @@ import {
   fetchTheoryResponses,
   voteTheoryResponse,
 } from "../services/api";
+import { UserAvatar } from "./UserAvatar";
+import { VoteIcon } from "./VoteIcon";
 
 export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
   const { user } = useAuth();
@@ -160,9 +162,7 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
             <article key={reply.id} className="reply-card">
               <header className="reply-card-header">
                 <div className="theory-author">
-                  <div className="author-avatar reply-avatar">
-                    {reply.author?.username?.slice(0, 1).toUpperCase() ?? "U"}
-                  </div>
+                  <UserAvatar user={reply.author} className="reply-avatar" />
                   <div className="theory-author-meta">
                     <strong>{reply.author?.username ?? "Usuario"}</strong>
                     <p className="theory-meta">
@@ -179,21 +179,25 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
                 <div className="theory-card-actions" role="group" aria-label="Votos de respuesta">
                   <button
                     type="button"
-                    className={reply.viewerVote === 1 ? "vote-chip active-like" : "vote-chip"}
+                    className={reply.viewerVote === 1 ? "vote-chip vote-chip-icon-only like-chip active-like" : "vote-chip vote-chip-icon-only like-chip"}
                     onClick={() => handleVote(reply.id, 1)}
                     disabled={votingId === reply.id}
                     aria-pressed={reply.viewerVote === 1}
+                    aria-label="Like"
+                    title="Like"
                   >
-                    Like
+                    <VoteIcon direction="up" className="vote-icon" />
                   </button>
                   <button
                     type="button"
-                    className={reply.viewerVote === -1 ? "vote-chip active-dislike" : "vote-chip"}
+                    className={reply.viewerVote === -1 ? "vote-chip vote-chip-icon-only dislike-chip active-dislike" : "vote-chip vote-chip-icon-only dislike-chip"}
                     onClick={() => handleVote(reply.id, -1)}
                     disabled={votingId === reply.id}
                     aria-pressed={reply.viewerVote === -1}
+                    aria-label="Dislike"
+                    title="Dislike"
                   >
-                    Dislike
+                    <VoteIcon direction="down" className="vote-icon" />
                   </button>
                 </div>
 

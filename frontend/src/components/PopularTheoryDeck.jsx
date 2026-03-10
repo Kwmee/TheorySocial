@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { UserAvatar } from "./UserAvatar";
 
 const SWIPE_THRESHOLD = 120;
 const MAX_VISIBLE_CARDS = 3;
@@ -189,7 +190,7 @@ export function PopularTheoryDeck({
 
                   <header className="swipe-card-header">
                     <div className="theory-author">
-                      <div className="author-avatar">{theory.authorInitial}</div>
+                      <UserAvatar user={theory.author} fallback={theory.authorInitial} />
                       <div>
                         <strong>{theory.author?.username ?? "Usuario"}</strong>
                         <p className="theory-meta">

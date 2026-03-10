@@ -6,6 +6,7 @@ import {
   login as loginRequest,
   logout as logoutRequest,
   signup as signupRequest,
+  updateMyProfile as updateMyProfileRequest,
 } from "../services/api";
 
 const AuthContext = createContext(null);
@@ -70,6 +71,12 @@ export function AuthProvider({ children }) {
     return updatedUser;
   };
 
+  const updateProfile = async (payload) => {
+    const updatedUser = await updateMyProfileRequest(payload);
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +88,7 @@ export function AuthProvider({ children }) {
         logout,
         acceptTerms,
         completeSwipeTutorial,
+        updateProfile,
       }}
     >
       {children}

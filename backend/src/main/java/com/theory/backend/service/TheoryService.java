@@ -59,7 +59,34 @@ public class TheoryService {
     public List<TheoryResponse> findMine(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return findByAuthor(username, user.getUsername());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TheoryResponse> findByAuthor(String viewerUsername, String authorUsername) {
+        User user = userRepository.findByUsername(authorUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<Theory> theories = theoryRepository.findAllByAuthorIdOrderByCreatedAtDesc(user.getId());
+        Map<Long, Integer> viewerVotes = getViewerVotesByTheoryId(viewerUsername, theories);
+        Map<Long, Long> responseCounts = getResponseCounts(theories);
+
+        return theories.stream()
+                .map(theory -> TheoryResponse.from(
+                        theory,
+                        viewerVotes.getOrDefault(theory.getId(), 0),
+                        responseCounts.getOrDefault(theory.getId(), 0L)
+                ))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TheoryResponse> findTop(String username, int limit) {
+        List<Theory> theories = theoryRepository.findAllByOrderByCreatedAtDesc().stream()
+                .sorted(Comparator.comparingInt(Theory::getScore).reversed()
+                        .thenComparing(Theory::getCreatedAt, Comparator.reverseOrder()))
+                .limit(limit)
+                .toList();
+
         Map<Long, Integer> viewerVotes = getViewerVotesByTheoryId(username, theories);
         Map<Long, Long> responseCounts = getResponseCounts(theories);
 

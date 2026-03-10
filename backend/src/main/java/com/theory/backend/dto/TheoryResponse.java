@@ -25,14 +25,16 @@ public record TheoryResponse(
                 theory.getCreatedAt(),
                 new AuthorSummary(
                         theory.getAuthor().getId(),
-                        theory.getAuthor().getUsername()
+                        theory.getAuthor().getUsername(),
+                        theory.getAuthor().getProfileImageUrl()
                 )
         );
     }
 
     public record AuthorSummary(
             Long id,
-            String username
+            String username,
+            String profileImageUrl
     ) {
     }
 }

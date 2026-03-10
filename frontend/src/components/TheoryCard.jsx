@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { TheoryReplies } from "./TheoryReplies";
+import { UserAvatar } from "./UserAvatar";
+import { VoteIcon } from "./VoteIcon";
 
 export function TheoryCard({
   theory,
@@ -29,7 +31,7 @@ export function TheoryCard({
     <article className="theory-card">
       <header className="theory-card-header">
         <div className="theory-author">
-          <div className="author-avatar">{theory.authorInitial}</div>
+          <UserAvatar user={theory.author} fallback={theory.authorInitial} />
           <div className="theory-author-meta">
             <strong>{theory.author?.username ?? "Usuario"}</strong>
             <p className="theory-meta">{new Date(theory.createdAt).toLocaleString("es-ES")}</p>
@@ -55,21 +57,25 @@ export function TheoryCard({
         <div className="theory-card-actions" role="group" aria-label="Acciones de voto">
           <button
             type="button"
-            className={theory.viewerVote === 1 ? "vote-chip active-like" : "vote-chip"}
+            className={theory.viewerVote === 1 ? "vote-chip vote-chip-icon-only like-chip active-like" : "vote-chip vote-chip-icon-only like-chip"}
             onClick={() => onVote?.(theory.id, resolveVoteValue(1))}
             disabled={voting}
             aria-pressed={theory.viewerVote === 1}
+            aria-label="Like"
+            title="Like"
           >
-            Like
+            <VoteIcon direction="up" className="vote-icon" />
           </button>
           <button
             type="button"
-            className={theory.viewerVote === -1 ? "vote-chip active-dislike" : "vote-chip"}
+            className={theory.viewerVote === -1 ? "vote-chip vote-chip-icon-only dislike-chip active-dislike" : "vote-chip vote-chip-icon-only dislike-chip"}
             onClick={() => onVote?.(theory.id, resolveVoteValue(-1))}
             disabled={voting}
             aria-pressed={theory.viewerVote === -1}
+            aria-label="Dislike"
+            title="Dislike"
           >
-            Dislike
+            <VoteIcon direction="down" className="vote-icon" />
           </button>
         </div>
 

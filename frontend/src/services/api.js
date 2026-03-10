@@ -1,12 +1,16 @@
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080/api";
+const API_ORIGIN = API_URL.replace(/\/api$/, "");
 
 async function request(path, options = {}) {
+  const isFormData = options.body instanceof FormData;
   const response = await fetch(`${API_URL}${path}`, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers ?? {}),
-    },
+    headers: isFormData
+      ? { ...(options.headers ?? {}) }
+      : {
+          "Content-Type": "application/json",
+          ...(options.headers ?? {}),
+        },
     ...options,
   });
 
@@ -31,6 +35,27 @@ async function request(path, options = {}) {
 
 export function fetchCurrentUser() {
   return request("/auth/me");
+}
+
+export function resolveAssetUrl(path) {
+  if (!path) {
+    return "";
+  }
+
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("blob:") ||
+    path.startsWith("data:")
+  ) {
+    return path;
+  }
+
+  return `${API_ORIGIN}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+export function fetchUserProfile(username) {
+  return request(`/users/${encodeURIComponent(username)}`);
 }
 
 export function signup(payload) {
@@ -67,6 +92,10 @@ export function fetchMyTheories() {
   return request("/theories/me");
 }
 
+export function fetchTheoriesByUsername(username) {
+  return request(`/theories/by-user/${encodeURIComponent(username)}`);
+}
+
 export function fetchPopularTheories(options = {}) {
   const search = new URLSearchParams();
 
@@ -80,6 +109,17 @@ export function fetchPopularTheories(options = {}) {
 
   const suffix = search.size > 0 ? `?${search.toString()}` : "";
   return request(`/theories/popular${suffix}`);
+}
+
+export function fetchTopTheories(options = {}) {
+  const search = new URLSearchParams();
+
+  if (options.limit) {
+    search.set("limit", options.limit);
+  }
+
+  const suffix = search.size > 0 ? `?${search.toString()}` : "";
+  return request(`/theories/top${suffix}`);
 }
 
 export function createTheory(payload) {
@@ -129,5 +169,29 @@ export function deleteTheoryResponse(responseId) {
 export function completeSwipeTutorial() {
   return request("/users/me/tutorials/swipe/complete", {
     method: "POST",
+  });
+}
+
+export function updateProfileImage(profileImageUrl) {
+  return request("/users/me/profile-image", {
+    method: "PUT",
+    body: JSON.stringify({ profileImageUrl }),
+  });
+}
+
+export function uploadProfileImage(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return request("/users/me/profile-image/upload", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export function updateMyProfile(payload) {
+  return request("/users/me/profile", {
+    method: "PUT",
+    body: JSON.stringify(payload),
   });
 }

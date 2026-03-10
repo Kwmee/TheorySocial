@@ -41,6 +41,12 @@ public class User {
     @Column(nullable = false)
     private boolean swipeTutorialSeen = false;
 
+    @Column(length = 500)
+    private String profileImageUrl;
+
+    @Column(length = 320)
+    private String bio;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -109,5 +115,21 @@ public class User {
 
     public void setSwipeTutorialSeen(boolean swipeTutorialSeen) {
         this.swipeTutorialSeen = swipeTutorialSeen;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

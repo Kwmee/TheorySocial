@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Inicio" },
-  { to: "/discover", label: "Descubrir" },
-  { to: "/create", label: "Crear" },
-  { to: "/search", label: "Buscar" },
-  { to: "/profile", label: "Mi perfil" },
+  { to: "/top", label: "TOP Teorias", shortLabel: "Top" },
+  { to: "/discover", label: "Descubrir", shortLabel: "Swipe" },
+  { to: "/create", label: "Crear", shortLabel: "Crear" },
+  { to: "/search", label: "Buscar", shortLabel: "Buscar" },
+  { to: "/profile", label: "Mi perfil", shortLabel: "Perfil" },
 ];
 
 export function SocialNavigation() {
@@ -18,7 +18,8 @@ export function SocialNavigation() {
           end={item.to === "/"}
           className={({ isActive }) => (isActive ? "social-nav-link active" : "social-nav-link")}
         >
-          {item.label}
+          <span className="nav-label-full">{item.label}</span>
+          <span className="nav-label-short">{item.shortLabel}</span>
         </NavLink>
       ))}
     </nav>
