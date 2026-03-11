@@ -4,6 +4,7 @@ import {
   createTheoryResponse,
   deleteTheoryResponse,
   fetchTheoryResponses,
+  updateTheoryResponse,
   voteTheoryResponse,
 } from "../services/api";
 import { UserAvatar } from "./UserAvatar";
@@ -19,6 +20,8 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
   const [submitting, setSubmitting] = useState(false);
   const [votingId, setVotingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editingDraft, setEditingDraft] = useState("");
 
   useEffect(() => {
     if (!open || loaded) {
@@ -121,6 +124,27 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
     }
   };
 
+  const startEditing = (reply) => {
+    setEditingId(reply.id);
+    setEditingDraft(reply.content);
+  };
+
+  const handleUpdate = async (replyId) => {
+    setVotingId(replyId);
+    setError("");
+
+    try {
+      const updated = await updateTheoryResponse(replyId, { content: editingDraft.trim() });
+      setReplies((current) => current.map((reply) => (reply.id === replyId ? updated : reply)));
+      setEditingId(null);
+      setEditingDraft("");
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setVotingId(null);
+    }
+  };
+
   if (!open) {
     return null;
   }
@@ -173,7 +197,20 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
                 <span className="vote-total">Score {reply.score}</span>
               </header>
 
-              <p className="reply-card-copy">{reply.content}</p>
+              {editingId === reply.id ? (
+                <div className="theory-inline-editor">
+                  <label>
+                    Editar respuesta
+                    <textarea
+                      rows="4"
+                      value={editingDraft}
+                      onChange={(event) => setEditingDraft(event.target.value)}
+                    />
+                  </label>
+                </div>
+              ) : (
+                <p className="reply-card-copy">{reply.content}</p>
+              )}
 
               <footer className="reply-card-footer">
                 <div className="theory-card-actions" role="group" aria-label="Votos de respuesta">
@@ -202,14 +239,43 @@ export function TheoryReplies({ theory, open, onOpen, onCountChange }) {
                 </div>
 
                 {user?.username === reply.author?.username ? (
-                  <button
-                    type="button"
-                    className="vote-chip delete-chip"
-                    onClick={() => handleDelete(reply.id)}
-                    disabled={deletingId === reply.id}
-                  >
-                    {deletingId === reply.id ? "Eliminando..." : "Eliminar"}
-                  </button>
+                  <>
+                    {editingId === reply.id ? (
+                      <>
+                        <button
+                          type="button"
+                          className="vote-chip"
+                          onClick={() => handleUpdate(reply.id)}
+                          disabled={votingId === reply.id || !editingDraft.trim()}
+                        >
+                          {votingId === reply.id ? "Guardando..." : "Guardar"}
+                        </button>
+                        <button
+                          type="button"
+                          className="vote-chip"
+                          onClick={() => {
+                            setEditingId(null);
+                            setEditingDraft("");
+                          }}
+                          disabled={votingId === reply.id}
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    ) : (
+                      <button type="button" className="vote-chip" onClick={() => startEditing(reply)}>
+                        Editar
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="vote-chip delete-chip"
+                      onClick={() => handleDelete(reply.id)}
+                      disabled={deletingId === reply.id}
+                    >
+                      {deletingId === reply.id ? "Eliminando..." : "Eliminar"}
+                    </button>
+                  </>
                 ) : null}
               </footer>
             </article>

@@ -21,3 +21,9 @@ mvn spring-boot:run
 ## Cambio manual de esquema
 - Para habilitar foto de perfil por URL ejecuta `database/manual-profile-image-migration.sql` sobre MySQL.
 - Los nuevos campos persistidos son `users.profile_image_url` y `users.bio`.
+- Para habilitar guardados de teorias y notificaciones ejecuta `database/manual-community-features-migration.sql`.
+- Las nuevas tablas persistidas son `theory_favorites` y `notifications`.
+- Para habilitar el grafo social de seguidores ejecuta `database/manual-social-graph-migration.sql`.
+- La nueva tabla persistida es `user_follows`.
+- Para habilitar teoria destacada en perfil ejecuta `database/manual-profile-discovery-migration.sql`.
+- El nuevo campo persistido es `users.pinned_theory_id`.

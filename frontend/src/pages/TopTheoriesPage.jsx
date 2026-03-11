@@ -29,20 +29,22 @@ export function TopTheoriesPage() {
           data = await fetchTheories();
         }
 
-        if (active) {
-          setTheories(
-            data
-              .map(enrichTheory)
-              .sort((left, right) => {
-                if (right.score !== left.score) {
-                  return right.score - left.score;
-                }
-
-                return new Date(right.createdAt) - new Date(left.createdAt);
-              })
-              .slice(0, 3),
-          );
+        if (!active) {
+          return;
         }
+
+        setTheories(
+          data
+            .map(enrichTheory)
+            .sort((left, right) => {
+              if (right.score !== left.score) {
+                return right.score - left.score;
+              }
+
+              return new Date(right.createdAt) - new Date(left.createdAt);
+            })
+            .slice(0, 3),
+        );
       } catch (requestError) {
         if (active) {
           setError(requestError.message);
@@ -62,19 +64,39 @@ export function TopTheoriesPage() {
   }, []);
 
   const handleVote = async (theoryId, value) => {
-    const updated = enrichTheory(await voteTheory(theoryId, value));
-    setTheories((current) =>
-      current
-        .map((theory) => (theory.id === theoryId ? updated : theory))
-        .sort((left, right) => {
-          if (right.score !== left.score) {
-            return right.score - left.score;
-          }
+    setError("");
 
-          return new Date(right.createdAt) - new Date(left.createdAt);
-        }),
-    );
-    return updated;
+    try {
+      await voteTheory(theoryId, value);
+
+      let refreshed;
+
+      try {
+        refreshed = await fetchTopTheories({ limit: 3 });
+      } catch (requestError) {
+        if (requestError.status !== 405) {
+          throw requestError;
+        }
+
+        refreshed = await fetchTheories();
+      }
+
+      setTheories(
+        refreshed
+          .map(enrichTheory)
+          .sort((left, right) => {
+            if (right.score !== left.score) {
+              return right.score - left.score;
+            }
+
+            return new Date(right.createdAt) - new Date(left.createdAt);
+          })
+          .slice(0, 3),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    }
   };
 
   return (

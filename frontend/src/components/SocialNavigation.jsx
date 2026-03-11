@@ -17,6 +17,8 @@ export function SocialNavigation() {
           to={item.to}
           end={item.to === "/"}
           className={({ isActive }) => (isActive ? "social-nav-link active" : "social-nav-link")}
+          aria-label={item.label}
+          title={item.label}
         >
           <span className="nav-label-full">{item.label}</span>
           <span className="nav-label-short">{item.shortLabel}</span>

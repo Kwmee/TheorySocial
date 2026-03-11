@@ -24,15 +24,18 @@ public class TheoryDiscussionService {
     private final TheoryReplyVoteRepository theoryReplyVoteRepository;
     private final TheoryRepository theoryRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public TheoryDiscussionService(TheoryReplyRepository theoryReplyRepository,
                                    TheoryReplyVoteRepository theoryReplyVoteRepository,
                                    TheoryRepository theoryRepository,
-                                   UserRepository userRepository) {
+                                   UserRepository userRepository,
+                                   NotificationService notificationService) {
         this.theoryReplyRepository = theoryReplyRepository;
         this.theoryReplyVoteRepository = theoryReplyVoteRepository;
         this.theoryRepository = theoryRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +64,9 @@ public class TheoryDiscussionService {
         reply.setAuthor(author);
         reply.setContent(content);
 
-        return TheoryReplyResponse.from(theoryReplyRepository.save(reply), 0);
+        TheoryReply savedReply = theoryReplyRepository.save(reply);
+        notificationService.notifyTheoryReplySafely(theory, author);
+        return TheoryReplyResponse.from(savedReply, 0);
     }
 
     @Transactional

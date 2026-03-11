@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -46,6 +48,10 @@ public class User {
 
     @Column(length = 320)
     private String bio;
+
+    @ManyToOne
+    @JoinColumn(name = "pinned_theory_id")
+    private Theory pinnedTheory;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -131,5 +137,13 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public Theory getPinnedTheory() {
+        return pinnedTheory;
+    }
+
+    public void setPinnedTheory(Theory pinnedTheory) {
+        this.pinnedTheory = pinnedTheory;
     }
 }

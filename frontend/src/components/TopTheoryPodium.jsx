@@ -1,9 +1,26 @@
 import { UserAvatar } from "./UserAvatar";
 import { VoteIcon } from "./VoteIcon";
+import { useState } from "react";
 
 const RANK_LABELS = ["1", "2", "3"];
 
 export function TopTheoryPodium({ theories, loading, error, onVote }) {
+  const [pendingTheoryId, setPendingTheoryId] = useState(null);
+
+  const handleVoteClick = async (theoryId, value) => {
+    if (!onVote || pendingTheoryId === theoryId) {
+      return;
+    }
+
+    setPendingTheoryId(theoryId);
+
+    try {
+      await onVote(theoryId, value);
+    } finally {
+      setPendingTheoryId(null);
+    }
+  };
+
   return (
     <section className="feed-surface">
       <div className="section-head feed-section-head">
@@ -38,7 +55,8 @@ export function TopTheoryPodium({ theories, loading, error, onVote }) {
                   className={theory.viewerVote === 1 ? "vote-chip vote-chip-icon-only like-chip active-like" : "vote-chip vote-chip-icon-only like-chip"}
                   aria-label="Like"
                   title="Like"
-                  onClick={() => onVote?.(theory.id, theory.viewerVote === 1 ? 0 : 1)}
+                  disabled={pendingTheoryId === theory.id}
+                  onClick={() => handleVoteClick(theory.id, theory.viewerVote === 1 ? 0 : 1)}
                 >
                   <VoteIcon direction="up" className="vote-icon" />
                 </button>
@@ -47,7 +65,8 @@ export function TopTheoryPodium({ theories, loading, error, onVote }) {
                   className={theory.viewerVote === -1 ? "vote-chip vote-chip-icon-only dislike-chip active-dislike" : "vote-chip vote-chip-icon-only dislike-chip"}
                   aria-label="Dislike"
                   title="Dislike"
-                  onClick={() => onVote?.(theory.id, theory.viewerVote === -1 ? 0 : -1)}
+                  disabled={pendingTheoryId === theory.id}
+                  onClick={() => handleVoteClick(theory.id, theory.viewerVote === -1 ? 0 : -1)}
                 >
                   <VoteIcon direction="down" className="vote-icon" />
                 </button>

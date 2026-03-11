@@ -21,11 +21,17 @@ public interface TheoryRepository extends JpaRepository<Theory, Long> {
     List<Theory> findAllByAuthorIdOrderByCreatedAtDesc(Long authorId);
 
     @EntityGraph(attributePaths = "author")
+    List<Theory> findAllByAuthorIdInOrderByCreatedAtDesc(Collection<Long> authorIds);
+
+    @EntityGraph(attributePaths = "author")
     List<Theory> findTop5ByOrderByScoreDescCreatedAtDesc();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select t from Theory t where t.id = :id")
     Optional<Theory> findByIdForUpdate(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = "author")
+    Optional<Theory> findWithAuthorById(Long id);
 
     @EntityGraph(attributePaths = "author")
     List<Theory> findAllByIdIn(Collection<Long> ids);

@@ -3,6 +3,7 @@ import {
   createTheory as createTheoryRequest,
   fetchPopularTheories,
   fetchTheories,
+  toggleFavoriteTheory as toggleFavoriteTheoryRequest,
   voteTheory as voteTheoryRequest,
 } from "../services/api";
 import { buildTopicOptions, enrichTheory, filterTheories } from "../services/theoryTopics";
@@ -91,14 +92,31 @@ export function useTheories() {
     return created;
   };
 
+  const syncTheory = (updatedTheory) => {
+    setTheories((current) =>
+      current.map((theory) => (theory.id === updatedTheory.id ? updatedTheory : theory)),
+    );
+    setPopularTheories((current) =>
+      current.map((theory) => (theory.id === updatedTheory.id ? updatedTheory : theory)),
+    );
+  };
+
   const voteTheory = async (theoryId, value) => {
     const updatedTheory = enrichTheory(await voteTheoryRequest(theoryId, value));
-    setTheories((current) =>
-      current.map((theory) => (theory.id === theoryId ? updatedTheory : theory)),
-    );
+    syncTheory(updatedTheory);
     setPopularTheories((current) => current.filter((theory) => theory.id !== theoryId));
     void reloadPopularTheories().catch(() => {});
     return updatedTheory;
+  };
+
+  const favoriteTheory = async (theoryId) => {
+    const updatedTheory = enrichTheory(await toggleFavoriteTheoryRequest(theoryId));
+    syncTheory(updatedTheory);
+    return updatedTheory;
+  };
+
+  const dismissPopularTheory = (theoryId) => {
+    setPopularTheories((current) => current.filter((theory) => theory.id !== theoryId));
   };
 
   const topicOptions = buildTopicOptions(theories);
@@ -122,6 +140,8 @@ export function useTheories() {
     popularError,
     createTheory,
     voteTheory,
+    favoriteTheory,
+    dismissPopularTheory,
     reloadPopularTheories,
   };
 }

@@ -2,6 +2,7 @@ package com.theory.backend.controller;
 
 import com.theory.backend.controller.AuthController.AuthResponse;
 import com.theory.backend.dto.UserProfileResponse;
+import com.theory.backend.dto.UserSuggestionResponse;
 import com.theory.backend.model.User;
 import com.theory.backend.service.AuthService;
 import com.theory.backend.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +42,43 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public UserProfileResponse getProfile(@PathVariable String username) {
-        return userService.findProfile(username);
+    public UserProfileResponse getProfile(@PathVariable String username,
+                                          @AuthenticationPrincipal UserDetails principal) {
+        return userService.findProfile(requireUsername(principal), username);
+    }
+
+    @GetMapping("/suggestions")
+    public List<UserSuggestionResponse> getSuggestions(@AuthenticationPrincipal UserDetails principal) {
+        return userService.findSuggestions(requireUsername(principal));
+    }
+
+    @GetMapping("/find")
+    public List<UserSuggestionResponse> searchUsers(@AuthenticationPrincipal UserDetails principal,
+                                                    @RequestParam("q") String query) {
+        return userService.searchUsers(requireUsername(principal), query);
+    }
+
+    @PostMapping("/{username}/follow")
+    public UserProfileResponse follow(@PathVariable String username,
+                                      @AuthenticationPrincipal UserDetails principal) {
+        return userService.follow(requireUsername(principal), username);
+    }
+
+    @DeleteMapping("/{username}/follow")
+    public UserProfileResponse unfollow(@PathVariable String username,
+                                        @AuthenticationPrincipal UserDetails principal) {
+        return userService.unfollow(requireUsername(principal), username);
+    }
+
+    @PutMapping("/me/pinned-theory/{theoryId}")
+    public UserProfileResponse pinTheory(@AuthenticationPrincipal UserDetails principal,
+                                         @PathVariable Long theoryId) {
+        return userService.pinTheory(requireUsername(principal), theoryId);
+    }
+
+    @DeleteMapping("/me/pinned-theory")
+    public UserProfileResponse unpinTheory(@AuthenticationPrincipal UserDetails principal) {
+        return userService.unpinTheory(requireUsername(principal));
     }
 
     @PostMapping("/me/tutorials/swipe/complete")
@@ -100,5 +137,12 @@ public class UserController {
             @Size(max = 320) String bio,
             @Size(max = 500) String profileImageUrl
     ) {
+    }
+
+    private String requireUsername(UserDetails principal) {
+        if (principal == null) {
+            throw new IllegalArgumentException("Authentication required");
+        }
+        return principal.getUsername();
     }
 }

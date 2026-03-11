@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { TheoryReplies } from "./TheoryReplies";
 import { UserAvatar } from "./UserAvatar";
 import { VoteIcon } from "./VoteIcon";
@@ -7,17 +8,40 @@ export function TheoryCard({
   theory,
   compact = false,
   onVote,
+  onFavorite,
+  onPin,
+  pinning = false,
+  pinned = false,
+  favoriting = false,
   voting = false,
   onDelete,
   deleting = false,
+  onUpdate,
+  updating = false,
 }) {
   const [discussionOpen, setDiscussionOpen] = useState(false);
   const [replyCount, setReplyCount] = useState(theory.responseCount ?? 0);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ title: theory.title, content: theory.content });
+  const [feedbackMessage, setFeedbackMessage] = useState("");
   const content = compact ? theory.excerpt : theory.content;
 
   useEffect(() => {
     setReplyCount(theory.responseCount ?? 0);
   }, [theory.responseCount]);
+
+  useEffect(() => {
+    setDraft({ title: theory.title, content: theory.content });
+  }, [theory.content, theory.title]);
+
+  useEffect(() => {
+    if (!feedbackMessage) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => setFeedbackMessage(""), 2200);
+    return () => window.clearTimeout(timer);
+  }, [feedbackMessage]);
 
   const resolveVoteValue = (clickedValue) => {
     if (theory.viewerVote === clickedValue) {
@@ -25,6 +49,41 @@ export function TheoryCard({
     }
 
     return clickedValue;
+  };
+
+  const handleSave = async () => {
+    await onUpdate?.(theory.id, {
+      title: draft.title.trim(),
+      content: draft.content.trim(),
+    });
+    setEditing(false);
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/theories/${theory.id}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: theory.title,
+          text: theory.excerpt,
+          url,
+        });
+        setFeedbackMessage("Teoria compartida.");
+        return;
+      }
+
+      await navigator.clipboard.writeText(url);
+      setFeedbackMessage("Enlace copiado.");
+    } catch {
+      window.prompt("Copia este enlace", url);
+      setFeedbackMessage("Copia manual del enlace abierta.");
+    }
+  };
+
+  const handleFavorite = async () => {
+    const updatedTheory = await onFavorite?.(theory.id);
+    setFeedbackMessage(updatedTheory?.bookmarked ? "Teoria guardada." : "Teoria eliminada de guardados.");
   };
 
   return (
@@ -40,10 +99,35 @@ export function TheoryCard({
         <span className="vote-total">Score {theory.score}</span>
       </header>
 
-      <div className="theory-card-copy">
-        <h3>{theory.title}</h3>
-        <p>{content}</p>
-      </div>
+      {editing ? (
+        <div className="theory-card-copy theory-inline-editor">
+          <label>
+            Titulo
+            <input
+              value={draft.title}
+              onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))}
+              maxLength={180}
+            />
+          </label>
+          <label>
+            Desarrollo
+            <textarea
+              rows="6"
+              value={draft.content}
+              onChange={(event) => setDraft((current) => ({ ...current, content: event.target.value }))}
+            />
+          </label>
+        </div>
+      ) : (
+        <div className="theory-card-copy">
+          <h3>
+            <Link to={`/theories/${theory.id}`} className="theory-title-link">
+              {theory.title}
+            </Link>
+          </h3>
+          <p>{content}</p>
+        </div>
+      )}
 
       <div className="theory-card-topics">
         {theory.topics.map((topic) => (
@@ -93,8 +177,62 @@ export function TheoryCard({
               {deleting ? "Eliminando..." : "Eliminar"}
             </button>
           ) : null}
+          {onUpdate ? (
+            editing ? (
+              <>
+                <button
+                  type="button"
+                  className="vote-chip"
+                  onClick={handleSave}
+                  disabled={updating || !draft.title.trim() || !draft.content.trim()}
+                >
+                  {updating ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                  type="button"
+                  className="vote-chip"
+                  onClick={() => {
+                    setDraft({ title: theory.title, content: theory.content });
+                    setEditing(false);
+                  }}
+                  disabled={updating}
+                >
+                  Cancelar
+                </button>
+              </>
+            ) : (
+              <button type="button" className="vote-chip" onClick={() => setEditing(true)}>
+                Editar
+              </button>
+            )
+          ) : null}
+          {onFavorite ? (
+            <button
+              type="button"
+              className={theory.bookmarked ? "vote-chip bookmark-chip active-bookmark" : "vote-chip bookmark-chip"}
+              onClick={handleFavorite}
+              disabled={favoriting}
+            >
+              {favoriting ? "Guardando..." : theory.bookmarked ? "Guardada" : "Guardar"}
+            </button>
+          ) : null}
+          {onPin ? (
+            <button
+              type="button"
+              className={pinned ? "vote-chip active-like" : "vote-chip"}
+              onClick={() => onPin(theory.id)}
+              disabled={pinning}
+            >
+              {pinning ? "Actualizando..." : pinned ? "Destacada" : "Destacar"}
+            </button>
+          ) : null}
+          <button type="button" className="vote-chip" onClick={handleShare}>
+            Compartir
+          </button>
         </div>
       </footer>
+
+      {feedbackMessage ? <p className="feedback theory-card-feedback">{feedbackMessage}</p> : null}
 
       <TheoryReplies
         theory={theory}

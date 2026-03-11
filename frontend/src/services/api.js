@@ -58,6 +58,26 @@ export function fetchUserProfile(username) {
   return request(`/users/${encodeURIComponent(username)}`);
 }
 
+export function fetchUserSuggestions() {
+  return request("/users/suggestions");
+}
+
+export function searchUsers(query) {
+  return request(`/users/find?q=${encodeURIComponent(query)}`);
+}
+
+export function followUser(username) {
+  return request(`/users/${encodeURIComponent(username)}/follow`, {
+    method: "POST",
+  });
+}
+
+export function unfollowUser(username) {
+  return request(`/users/${encodeURIComponent(username)}/follow`, {
+    method: "DELETE",
+  });
+}
+
 export function signup(payload) {
   return request("/auth/signup", {
     method: "POST",
@@ -88,8 +108,20 @@ export function fetchTheories() {
   return request("/theories");
 }
 
+export function fetchTheoryById(theoryId) {
+  return request(`/theories/${theoryId}`);
+}
+
 export function fetchMyTheories() {
   return request("/theories/me");
+}
+
+export function fetchFavoriteTheories() {
+  return request("/theories/favorites");
+}
+
+export function fetchFollowingTheories() {
+  return request("/theories/following");
 }
 
 export function fetchTheoriesByUsername(username) {
@@ -136,9 +168,22 @@ export function voteTheory(theoryId, value) {
   });
 }
 
+export function toggleFavoriteTheory(theoryId) {
+  return request(`/theories/${theoryId}/favorite`, {
+    method: "POST",
+  });
+}
+
 export function deleteTheory(theoryId) {
   return request(`/theories/${theoryId}`, {
     method: "DELETE",
+  });
+}
+
+export function updateTheory(theoryId, payload) {
+  return request(`/theories/${theoryId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
   });
 }
 
@@ -157,6 +202,13 @@ export function voteTheoryResponse(responseId, value) {
   return request(`/responses/${responseId}/vote`, {
     method: "POST",
     body: JSON.stringify({ value }),
+  });
+}
+
+export function updateTheoryResponse(responseId, payload) {
+  return request(`/responses/${responseId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
   });
 }
 
@@ -193,5 +245,37 @@ export function updateMyProfile(payload) {
   return request("/users/me/profile", {
     method: "PUT",
     body: JSON.stringify(payload),
+  });
+}
+
+export function pinMyTheory(theoryId) {
+  return request(`/users/me/pinned-theory/${theoryId}`, {
+    method: "PUT",
+  });
+}
+
+export function unpinMyTheory() {
+  return request("/users/me/pinned-theory", {
+    method: "DELETE",
+  });
+}
+
+export function fetchNotifications() {
+  return request("/notifications");
+}
+
+export function fetchUnreadNotificationCount() {
+  return request("/notifications/unread-count");
+}
+
+export function markNotificationRead(notificationId) {
+  return request(`/notifications/${notificationId}/read`, {
+    method: "POST",
+  });
+}
+
+export function markAllNotificationsRead() {
+  return request("/notifications/read-all", {
+    method: "POST",
   });
 }

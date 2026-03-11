@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,9 +40,25 @@ public class TheoryController {
         return theoryService.findAll(requireUsername(principal));
     }
 
+    @GetMapping("/{id}")
+    public TheoryResponse getTheoryById(@PathVariable Long id,
+                                        @AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findById(id, requireUsername(principal));
+    }
+
     @GetMapping("/me")
     public List<TheoryResponse> getMyTheories(@AuthenticationPrincipal UserDetails principal) {
         return theoryService.findMine(requireUsername(principal));
+    }
+
+    @GetMapping("/favorites")
+    public List<TheoryResponse> getFavoriteTheories(@AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findFavorites(requireUsername(principal));
+    }
+
+    @GetMapping("/following")
+    public List<TheoryResponse> getFollowingFeed(@AuthenticationPrincipal UserDetails principal) {
+        return theoryService.findFollowing(requireUsername(principal));
     }
 
     @GetMapping("/by-user/{username}")
@@ -78,6 +95,19 @@ public class TheoryController {
                                      @Valid @RequestBody VoteTheoryRequest request,
                                      @AuthenticationPrincipal UserDetails principal) {
         return theoryService.vote(id, requireUsername(principal), request.value());
+    }
+
+    @PostMapping("/{id}/favorite")
+    public TheoryResponse toggleFavorite(@PathVariable Long id,
+                                         @AuthenticationPrincipal UserDetails principal) {
+        return theoryService.toggleFavorite(id, requireUsername(principal));
+    }
+
+    @PutMapping("/{id}")
+    public TheoryResponse updateTheory(@PathVariable Long id,
+                                       @Valid @RequestBody CreateTheoryRequest request,
+                                       @AuthenticationPrincipal UserDetails principal) {
+        return theoryService.update(id, request.title(), request.content(), requireUsername(principal));
     }
 
     @DeleteMapping("/{id}")
